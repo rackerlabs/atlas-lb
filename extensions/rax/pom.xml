@@ -9,18 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Openstack :: Atlas :: API :: Extensions :: RAX</name>
-    <artifactId>rax</artifactId>
+    <name>Openstack :: Atlas :: Extension :: RAX  </name>
+    <artifactId>atlas-rax-parent</artifactId>
     <packaging>pom</packaging>
 
     <modules>
         <module>data-model</module>
         <module>persistence</module>
         <module>api</module>
+        <module>package</module>        
     </modules>
-    <dependencies>
-
-    </dependencies>
 
     <build>
         <plugins>

@@ -41,7 +41,7 @@ public class NetScalerAdapterImpl implements LoadBalancerAdapter {
 
         Integer accountId = lb.getAccountId(); 
 
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.LoadBalancer nsLB = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.LoadBalancer();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.LoadBalancer nsLB = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.LoadBalancer();
 
         NSAdapterUtils.populateNSLoadBalancer(lb, nsLB);
 
@@ -61,7 +61,7 @@ public class NetScalerAdapterImpl implements LoadBalancerAdapter {
 
         Integer accountId = lb.getAccountId(); 
         
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.LoadBalancer nsLB = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.LoadBalancer();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.LoadBalancer nsLB = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.LoadBalancer();
         NSAdapterUtils.populateNSLoadBalancer(lb, nsLB);
         
 		String requestBody = NSAdapterUtils.getRequestBody(nsLB);
@@ -95,7 +95,7 @@ public class NetScalerAdapterImpl implements LoadBalancerAdapter {
 
         if(nodes.size() > 0)
         {
-            com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Nodes nsNodes = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Nodes();
+            com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Nodes nsNodes = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Nodes();
             NSAdapterUtils.populateNSNodes(nodes, nsNodes.getNodes());
             String requestBody = NSAdapterUtils.getRequestBody(nsNodes);
             String serviceUrl = config.getHost().getEndpoint();
@@ -133,7 +133,7 @@ public class NetScalerAdapterImpl implements LoadBalancerAdapter {
         Integer resourceId = lbId;
         String childResourceType = "connectionthrottle";
 		
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.ConnectionThrottle nsThrottle = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.ConnectionThrottle();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.ConnectionThrottle nsThrottle = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.ConnectionThrottle();
 		NSAdapterUtils.populateConnectionThrottle(conThrottle, nsThrottle);
         String requestBody = NSAdapterUtils.getRequestBody(nsThrottle);
         String serviceUrl = config.getHost().getEndpoint();
@@ -164,9 +164,9 @@ public class NetScalerAdapterImpl implements LoadBalancerAdapter {
         Integer resourceId = lbId;
         String childResourceType = "healthmonitor";
 
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitor nsMon;
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitor nsMon;
 
-        nsMon  = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitor();  
+        nsMon  = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitor();  
 
         NSAdapterUtils.populateNSHealthMonitor(monitor, nsMon);
 
@@ -199,7 +199,7 @@ public class NetScalerAdapterImpl implements LoadBalancerAdapter {
         Integer resourceId = lbId;
         String childResourceType = "sessionpersistence";
 		
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.SessionPersistence nsPersistence = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.SessionPersistence();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.SessionPersistence nsPersistence = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.SessionPersistence();
 		NSAdapterUtils.populateSessionPersistence(sessionPersistence, nsPersistence);
         String requestBody = NSAdapterUtils.getRequestBody(nsPersistence);
         String serviceUrl = config.getHost().getEndpoint();

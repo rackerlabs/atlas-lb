@@ -9,12 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Openstack :: Atlas :: API :: Extensions</name>
+    <name>Openstack :: Atlas :: Extensions</name>
     <artifactId>extensions</artifactId>
     <packaging>pom</packaging>
 
     <modules>
         <module>rax</module>
+        <module>ctxs</module>        
     </modules>
 
     <build>
