@@ -12,6 +12,198 @@
     <xsd:import schemaLocation="../../../../../../../../core-data-model/src/main/resources/META-INF/xsd/CoreApi.xsd"
                 namespace="http://docs.openstack.org/atlas/api/v1.1"/>
 
+
+    <!--LOAD BALANCER EXTENSIONS-->
+    
+    <xsd:element name="loadBalancer" type="tns:loadBalancer"/>
+    
+    <xsd:complexType name="loadBalancer">
+        <xsd:complexContent>
+            <xsd:extension base="core:loadBalancer">
+                <xsd:sequence>
+                    <xsd:element name="accessList" type="tns:accessList" minOccurs="0"/>
+                </xsd:sequence>            
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+
+
+    
+    <!--HEALTH MONITOR EXTENSIONS-->    
+    <xsd:element name="healthMonitor" type="tns:healthMonitor"/>
+    
+    <xsd:complexType name="healthMonitor">
+        <xsd:complexContent>
+            <xsd:extension base="core:healthMonitor">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>                    
+
+
+    <!--VIRTUAL IP EXTENSIONS-->            
+    <xsd:element name="virtualIp" type="tns:virtualIp"/>
+    
+    <xsd:complexType name="virtualIp">
+        <xsd:complexContent>
+            <xsd:extension base="core:virtualIp">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>                    
+        
+
+    <!--NODE EXTENSIONS-->            
+    <xsd:element name="node" type="tns:node"/>
+    
+    <xsd:complexType name="node">
+        <xsd:complexContent>
+            <xsd:extension base="core:node">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+    
+
+    <!--SESSION PERSISTENCE EXTENSIONS-->            
+    <xsd:element name="sessionPersistence" type="tns:sessionPersistence"/>
+    
+    <xsd:complexType name="sessionPersistence">
+        <xsd:complexContent>
+            <xsd:extension base="core:sessionPersistence">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+        
+
+    <!--CONNECTION THROTTLE EXTENSIONS-->            
+    <xsd:element name="connectionThrottle" type="tns:connectionThrottle"/>
+    
+    <xsd:complexType name="connectionThrottle">
+        <xsd:complexContent>
+            <xsd:extension base="core:connectionThrottle">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+        
+                    
+    <!--ALGORITHM EXTENSIONS-->            
+    <xsd:complexType name="algorithm">
+        <xsd:complexContent>
+            <xsd:extension base="core:algorithm">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+    
+    
+    <!--LOAD BALANCER USAGE EXTENSIONS-->                
+    <xsd:element name="loadBalancerUsage" type="tns:loadBalancerUsage"/>
+    
+    <xsd:complexType name="loadBalancerUsage">
+        <xsd:complexContent>
+            <xsd:extension base="core:loadBalancerUsage">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+
+
+    <!--LOAD BALANCER USAGE RECORD EXTENSIONS-->            
+    <xsd:element name="loadBalancerUsageRecord" type="tns:loadBalancerUsageRecord"/>
+    
+    <xsd:complexType name="loadBalancerUsageRecord">
+        <xsd:complexContent>
+            <xsd:extension base="core:loadBalancerUsageRecord">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+        
+
+    <!--PROTOCOL EXTENSIONS-->            
+    <xsd:complexType name="protocol">
+        <xsd:complexContent>
+            <xsd:extension base="core:protocol">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+                
+    <!--LIMIT TYPE EXTENSIONS-->            
+    <xsd:element name="limitType" type="tns:limitType"/>
+    
+    <xsd:complexType name="limitType">
+        <xsd:complexContent>
+            <xsd:extension base="core:limitType">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+                        
+
+    <!--LIMITS EXTENSIONS-->            
+    <xsd:element name="limits" type="tns:limits"/>
+    
+    <xsd:complexType name="limits">
+        <xsd:complexContent>
+            <xsd:extension base="core:limits">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>    
+    
+
+    <!--RATE EXTENSIONS-->            
+    <xsd:element name="rate" type="tns:rate"/>
+    
+    <xsd:complexType name="rate">
+        <xsd:complexContent>
+            <xsd:extension base="core:rate">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>        
+                        
+
+    <!--RATE LIMIT EXTENSIONS-->            
+    <xsd:element name="rateLimit" type="tns:rateLimit"/>
+    
+    <xsd:complexType name="rateLimit">
+        <xsd:complexContent>
+            <xsd:extension base="core:rateLimit">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType> 
+                            
+                            
+    <!--ABSOLUTE EXTENSIONS-->            
+    <xsd:element name="absolute" type="tns:absolute"/>
+    
+    <xsd:complexType name="absolute">
+        <xsd:complexContent>
+            <xsd:extension base="core:absolute">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>           
+    
+    <!--ABSOLUTE EXTENSIONS-->            
+    <xsd:element name="absoluteLimit" type="tns:absoluteLimit"/>
+    
+    <xsd:complexType name="absoluteLimit">
+        <xsd:complexContent>
+            <xsd:extension base="core:absoluteLimit">
+                <xsd:anyAttribute namespace="##other" processContents="strict"/>            
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>                                     
+                                  
+    
     <!--ACCESS LIST EXTENSIONS-->
     <xsd:element name="accessList" type="tns:accessList"/>
     <xsd:complexType name="accessList">
