@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.openstack.atlas</groupId>
+        <artifactId>atlas-ctxs-adapters</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>atlas-ctxs-netscaler-adapter</artifactId>
+    <name>Openstack :: Atlas :: Extension :: CTXS :: Adapters :: NetScaler </name>
+
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>atlas-ctxs-adapter-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-netscaler-adapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>                
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-adapter-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>atlas-ctxs-persistence</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+	<dependency>
+    	    <groupId>com.sun.jersey</groupId>
+    	    <artifactId>jersey-client</artifactId>
+    	    <version>1.8</version>
+	</dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jvnet.jaxb2-commons</groupId>
+                        <artifactId>collection-setter-injector</artifactId>
+                        <version>1.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>xew</groupId>
+                        <artifactId>xew-openstack</artifactId>
+                        <version>1.0.0</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generate-ctxs-ns-cloud-loadbalancer</id>
+                        <configuration>
+                            <staleFile>target/CtxsNSCloudLoadBalancerApi.staleFile</staleFile>
+                            <extension>true</extension>
+                            <schemaDirectory>
+                                ${basedir}/src/main/resources/META-INF/xsd
+                            </schemaDirectory>
+                            <clearOutputDir>false</clearOutputDir>
+                            <schemaFiles>CtxsNSCloudLoadBalancerApi.xsd</schemaFiles>
+                            <packageName>com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.extensions</packageName>
+                            <!--<arguments>-Xcollection-setter-injector</arguments>-->
+                            <arguments>-Xxew -setters</arguments>
+                            <bindingDirectory>../../../../core-adapters/core-netscaler-adapter/src/main/resources/META-INF/xsd</bindingDirectory>
+                            <bindingFiles>CoreNSApiBindings.xjb</bindingFiles>
+                        </configuration>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

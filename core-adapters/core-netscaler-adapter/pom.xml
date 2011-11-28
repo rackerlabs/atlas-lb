@@ -95,7 +95,7 @@
                             </schemaDirectory>
                             <clearOutputDir>false</clearOutputDir>
                             <schemaFiles>NSCloudLoadBalancerApi.xsd</schemaFiles>
-                            <packageName>com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1</packageName>
+                            <packageName>com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11</packageName>
                             <!--<arguments>-Xcollection-setter-injector</arguments>-->
                             <arguments>-Xxew -setters</arguments>
                         </configuration>

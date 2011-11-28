@@ -52,10 +52,10 @@
         <bindings scd="tns:loadBalancers">
             <class ref="org.openstack.atlas.core.api.v1.LoadBalancers"/>
         </bindings>
-        <bindings scd="tns:loadBalancerUsage">
+        <bindings scd="~tns:loadBalancerUsage">
             <class ref="org.openstack.atlas.core.api.v1.LoadBalancerUsage"/>
         </bindings>
-        <bindings scd="tns:loadBalancerUsageRecord">
+        <bindings scd="~tns:loadBalancerUsageRecord">
             <class ref="org.openstack.atlas.core.api.v1.LoadBalancerUsageRecord"/>
         </bindings>
         <bindings scd="~tns:node">
@@ -70,16 +70,16 @@
         <bindings scd="~tns:protocols">
             <class ref="org.openstack.atlas.core.api.v1.Protocols"/>
         </bindings>
-        <bindings scd="tns:rate">
+        <bindings scd="~tns:rate">
             <class ref="org.openstack.atlas.core.api.v1.Rate"/>
         </bindings>
-        <bindings scd="tns:rateLimit">
+        <bindings scd="~tns:rateLimit">
             <class ref="org.openstack.atlas.core.api.v1.RateLimit"/>
         </bindings>
-        <bindings scd="tns:rates">
+        <bindings scd="~tns:rates">
             <class ref="org.openstack.atlas.core.api.v1.Rates"/>
         </bindings>
-        <bindings scd="tns:sessionPersistence">
+        <bindings scd="~tns:sessionPersistence">
             <class ref="org.openstack.atlas.core.api.v1.SessionPersistence"/>
         </bindings>
         <bindings scd="~tns:virtualIp">

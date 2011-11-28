@@ -99,7 +99,7 @@ public class NSAdapterUtils
 	 	
         try 
         {
-			JAXBContext ctxt = JAXBContext.newInstance("com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1");
+			JAXBContext ctxt = JAXBContext.newInstance("com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11");
 			Unmarshaller  u = ctxt.createUnmarshaller() ; 
 			return u.unmarshal( new StreamSource( new StringReader( response) ) );
 		} 
@@ -119,7 +119,7 @@ public class NSAdapterUtils
 	 	
         try 
         {
-            JAXBContext ctxt = JAXBContext.newInstance("com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1");
+            JAXBContext ctxt = JAXBContext.newInstance("com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11");
             Marshaller m = ctxt.createMarshaller() ; 
             m.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             Writer writer = new StringWriter();
@@ -141,13 +141,13 @@ public class NSAdapterUtils
 
 
 
-    static void populateNSLoadBalancer(LoadBalancer lb, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.LoadBalancer nsLB) 
+    static void populateNSLoadBalancer(LoadBalancer lb, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.LoadBalancer nsLB) 
            throws BadRequestException
     {
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.VirtualIp nsVIP = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.VirtualIp();
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitor nsMon = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitor();
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.SessionPersistence nsPersistence = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.SessionPersistence();
-        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.ConnectionThrottle nsThrottle = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.ConnectionThrottle();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.VirtualIp nsVIP = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.VirtualIp();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitor nsMon = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitor();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.SessionPersistence nsPersistence = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.SessionPersistence();
+        com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.ConnectionThrottle nsThrottle = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.ConnectionThrottle();
 
 
         Integer id = lb.getId();
@@ -216,7 +216,7 @@ public class NSAdapterUtils
 		nsLB.setConnectionThrottle(nsThrottle);
     }
 
-    static void populateNSVIP(Set<LoadBalancerJoinVip> vips, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.VirtualIp nsVIP) 
+    static void populateNSVIP(Set<LoadBalancerJoinVip> vips, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.VirtualIp nsVIP) 
            throws BadRequestException
                  
     {
@@ -249,18 +249,18 @@ public class NSAdapterUtils
 
     	    nsVIP.setAddress(vipAddress);
 
-            nsVIP.setIpVersion(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.IpVersion.IPV4);
+            nsVIP.setIpVersion(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.IpVersion.IPV4);
 
             if (vipType != null)
             {   
                         switch(vipType)
                         { 
                             case PUBLIC:  
-		                        nsVIP.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.VirtualIpType.PUBLIC);
+		                        nsVIP.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.VirtualIpType.PUBLIC);
                                 break;
 
                             case PRIVATE:  
-		                        nsVIP.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.VirtualIpType.PRIVATE);
+		                        nsVIP.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.VirtualIpType.PRIVATE);
                                 break;
 
                             default:
@@ -274,7 +274,7 @@ public class NSAdapterUtils
     }
 
 
-    static void populateNSVIP6(Set<LoadBalancerJoinVip6> vips6, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.VirtualIp nsVIP) 
+    static void populateNSVIP6(Set<LoadBalancerJoinVip6> vips6, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.VirtualIp nsVIP) 
            throws BadRequestException
                  
     {
@@ -301,8 +301,8 @@ public class NSAdapterUtils
 
 
 
-		    nsVIP.setIpVersion(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.IpVersion.IPV6);
-		    nsVIP.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.VirtualIpType.PUBLIC);
+		    nsVIP.setIpVersion(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.IpVersion.IPV6);
+		    nsVIP.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.VirtualIpType.PUBLIC);
 
             try {
                 String vipAddress = vip.getDerivedIpString();
@@ -320,11 +320,11 @@ public class NSAdapterUtils
     }
     
     
-    static com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Node translateNode(Node node, boolean forUpdate) 
+    static com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Node translateNode(Node node, boolean forUpdate) 
            throws BadRequestException
     {
 
-	   com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Node nsNode = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Node();
+	   com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Node nsNode = new com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Node();
 
 	   Integer nodeid = node.getId();
 	   String address = node.getAddress();
@@ -349,16 +349,16 @@ public class NSAdapterUtils
 
        if (enabled)
        {
-			nsNode.setCondition(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.NodeCondition.ENABLED);
+			nsNode.setCondition(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.NodeCondition.ENABLED);
        } else {
-			nsNode.setCondition(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.NodeCondition.DISABLED);
+			nsNode.setCondition(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.NodeCondition.DISABLED);
 		}
 
 		return nsNode;	
 	}
 
 
-    static void populateNSNodes(Collection<Node> nodes, List<com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Node> nsNodes) 
+    static void populateNSNodes(Collection<Node> nodes, List<com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Node> nsNodes) 
            throws BadRequestException
     {
 
@@ -368,13 +368,13 @@ public class NSAdapterUtils
 			boolean forUpdate = false;
             for (Node node : nodes)
     	    {
-               com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Node nsNode = translateNode(node, forUpdate);
+               com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Node nsNode = translateNode(node, forUpdate);
                nsNodes.add(nsNode);
             }
     	}
     }
 
-    static void populateNSHealthMonitor(HealthMonitor monitor, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitor nsMon) 
+    static void populateNSHealthMonitor(HealthMonitor monitor, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitor nsMon) 
            throws BadRequestException 
     {
 
@@ -395,19 +395,19 @@ public class NSAdapterUtils
 
         if (monType == "CONNECT")
         { 
-			nsMon.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitorType.CONNECT);
+			nsMon.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitorType.CONNECT);
 			return; 
         }
 
         if (monType == "HTTP")
         { 
-			nsMon.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitorType.HTTP);
+			nsMon.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitorType.HTTP);
             return;
         }
         
         if (monType == "HTTPS")
         {         
-			nsMon.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.HealthMonitorType.HTTPS);
+			nsMon.setType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.HealthMonitorType.HTTPS);
             return;
         }
 
@@ -416,7 +416,7 @@ public class NSAdapterUtils
     }
 
 
-	static com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.LoadBalancer
+	static com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.LoadBalancer
 			getLB(LoadBalancerEndpointConfiguration config, Integer lbId, Integer accountId) 
            throws AdapterException 
 	{
@@ -426,10 +426,10 @@ public class NSAdapterUtils
         String resourceUrl = NSAdapterUtils.getLBURLStr(serviceUrl, accountId, resourceType, resourceId);
 
         String nsLB = NSAdapterUtils.performRequest("GET", resourceUrl, "");
-		return (com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.LoadBalancer) NSAdapterUtils.getResponseObject(nsLB);
+		return (com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.LoadBalancer) NSAdapterUtils.getResponseObject(nsLB);
 	}
 
-	static List<com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Node> 
+	static List<com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Node> 
 	getAllNodes(LoadBalancerEndpointConfiguration config, Integer lbId, Integer accountId) 
            throws AdapterException 
     {
@@ -440,19 +440,19 @@ public class NSAdapterUtils
         String resourceUrl = NSAdapterUtils.getLBURLStr(serviceUrl, accountId, resourceType, resourceId, childResourceType);
 
         String nodesAsString = NSAdapterUtils.performRequest("GET", resourceUrl, "");
-		com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Nodes nsNodes = (com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.Nodes) 
+		com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Nodes nsNodes = (com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.Nodes) 
 																						NSAdapterUtils.getResponseObject(nodesAsString);
 		return nsNodes.getNodes();
 	
 	}
-    static void populateSessionPersistence(SessionPersistence sp, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.SessionPersistence nsSP) 
+    static void populateSessionPersistence(SessionPersistence sp, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.SessionPersistence nsSP) 
            throws BadRequestException
     {
 		String pt = sp.getPersistenceType();
 		
         if (pt == "HTTP_COOKIE")
         { 
-			nsSP.setPersistenceType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.PersistenceType.HTTP_COOKIE);
+			nsSP.setPersistenceType(com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.PersistenceType.HTTP_COOKIE);
             return;
         }
         
@@ -460,7 +460,7 @@ public class NSAdapterUtils
 	}
 
 
-    static void populateConnectionThrottle(ConnectionThrottle throttle, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v1.ConnectionThrottle nsThrottle) 
+    static void populateConnectionThrottle(ConnectionThrottle throttle, com.citrix.cloud.netscaler.atlas.docs.loadbalancers.api.v11.ConnectionThrottle nsThrottle) 
            throws BadRequestException 
     {
 		nsThrottle.setRateInterval(throttle.getRateInterval());
