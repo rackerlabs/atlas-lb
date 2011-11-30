@@ -3,21 +3,7 @@
 
     <bindings scd="x-schema::tns" xmlns:tns="http://docs.openstack.org/atlas/api/v1.1">
         <schemaBindings map="true"/>
-
-        <!--Bindings for enumerated types-->
-        <bindings scd="~tns:ipVersion">
-            <typesafeEnumClass ref="org.openstack.atlas.core.api.v1.IpVersion">
-                <typesafeEnumMember value="IPV4" name="IPV4"/>
-                <typesafeEnumMember value="IPV6" name="IPV6"/>
-            </typesafeEnumClass>
-        </bindings>
-        <bindings scd="~tns:vipType">
-            <typesafeEnumClass ref="org.openstack.atlas.core.api.v1.VipType">
-                <typesafeEnumMember value="PUBLIC" name="PUBLIC"/>
-                <typesafeEnumMember value="PRIVATE" name="PRIVATE"/>
-            </typesafeEnumClass>
-        </bindings>
-
+        
         <!--Bindings for classes-->
         <bindings scd="~tns:absolute">
             <class ref="org.openstack.atlas.core.api.v1.Absolute"/>
@@ -88,6 +74,12 @@
         <bindings scd="~tns:virtualIps">
             <class ref="org.openstack.atlas.core.api.v1.VirtualIps"/>
         </bindings>
+        <bindings scd="~tns:ipVersion">
+            <typesafeEnumClass ref="org.openstack.atlas.core.api.v1.IpVersion"/>
+        </bindings>
+        <bindings scd="~tns:vipType">
+            <typesafeEnumClass ref="org.openstack.atlas.core.api.v1.VipType"/>
+        </bindings>                      
     </bindings>
 </bindings>
 

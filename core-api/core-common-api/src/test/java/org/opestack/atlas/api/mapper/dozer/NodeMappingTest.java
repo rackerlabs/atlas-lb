@@ -70,10 +70,12 @@ public class NodeMappingTest {
             Assert.assertEquals(domainNode.getStatus(), apiNode.getStatus());
         }
 
+        /*
         @Test
         public void shouldNotMapExtensionAttributes() {
             Assert.assertTrue(apiNode.getOtherAttributes().isEmpty());
         }
+        */
     }
 }
 

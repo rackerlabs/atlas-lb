@@ -30,6 +30,7 @@ public class RaxConnectionThrottleValidatorBuilder extends ConnectionThrottleVal
     public RaxConnectionThrottleValidatorBuilder() {
         super();
         //PUT EXPECTATIONS
+        /*         
         result(validationTarget().getOtherAttributes()).if_().not().adhereTo(new MustBeEmptyOrNull()).then().must().adhereTo(new Verifier<Map<QName, String>>() {
             @Override
             public VerifierResult verify(Map<QName, String> otherAttributes) {
@@ -37,7 +38,7 @@ public class RaxConnectionThrottleValidatorBuilder extends ConnectionThrottleVal
                 return new MustBeIntegerInRange(MIN_CONNECTIONS[0], MIN_CONNECTIONS[1]).verify(Integer.parseInt(minConnections));
             }
         }).forContext(PUT).withMessage("Must provide a valid minimum connections range.");
-
+  
         result(validationTarget().getOtherAttributes()).if_().not().adhereTo(new MustBeEmptyOrNull()).then().must().adhereTo(new Verifier<Map<QName, String>>() {
             @Override
             public VerifierResult verify(Map<QName, String> otherAttributes) {
@@ -45,5 +46,6 @@ public class RaxConnectionThrottleValidatorBuilder extends ConnectionThrottleVal
                 return new MustBeIntegerInRange(MAX_CONNECTIONS[0], MAX_CONNECTIONS[1]).verify(Integer.parseInt(maxConnections));
             }
         }).forContext(PUT).withMessage("Must provide a valid maximum connections range.");
+        */
     }
 }

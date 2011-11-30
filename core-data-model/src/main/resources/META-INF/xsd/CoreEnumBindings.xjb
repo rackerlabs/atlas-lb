@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb">
+
+    <bindings scd="x-schema::tns" xmlns:tns="http://docs.openstack.org/atlas/api/v1.1">
+        <schemaBindings map="true"/>
+        
+        <!--Bindings for enumerated types-->
+        <bindings scd="~tns:ipVersion">
+            <typesafeEnumClass>
+                <typesafeEnumMember value="IPV4" name="IPV4"/>
+                <typesafeEnumMember value="IPV6" name="IPV6"/>
+            </typesafeEnumClass>
+        </bindings>
+
+        <bindings scd="~tns:vipType">
+            <typesafeEnumClass>
+                <typesafeEnumMember value="PUBLIC" name="PUBLIC"/>
+                <typesafeEnumMember value="PRIVATE" name="PRIVATE"/>
+            </typesafeEnumClass>
+        </bindings>
+    </bindings>
+    
+</bindings>        

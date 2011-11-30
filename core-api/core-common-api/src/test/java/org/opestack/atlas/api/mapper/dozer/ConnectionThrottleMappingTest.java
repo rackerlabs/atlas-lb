@@ -82,9 +82,11 @@ public class ConnectionThrottleMappingTest {
             Assert.assertEquals(3600, apiConnectionThrottle.getRateInterval().intValue());
         }
 
+        /* 
         @Test
         public void shouldNotMapExtensionAttributes() {
             Assert.assertTrue(apiConnectionThrottle.getOtherAttributes().isEmpty());
         }
+        */
     }
 }

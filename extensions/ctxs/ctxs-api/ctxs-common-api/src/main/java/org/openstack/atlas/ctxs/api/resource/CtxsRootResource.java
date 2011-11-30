@@ -8,11 +8,6 @@ import javax.ws.rs.Path;
 
 @Path("{accountId: [-+]?[0-9][0-9]*}")
 public class CtxsRootResource extends RootResource {
-
-/*
-    @Autowired
-    private CtxsLoadBalancersResource ctxsloadBalancersResource;
-*/    
     @Autowired
     private CertificatesResource certificatesResource;
     
@@ -20,14 +15,5 @@ public class CtxsRootResource extends RootResource {
     @Path("certificates")
     public CertificatesResource retrieveCertificatesResource() {
         return certificatesResource;
-    }
-
-/*
-    @Path("loadbalancers")
-    public CtxsLoadBalancersResource retrieveLoadBalancersResource() {
-        ctxsloadBalancersResource.setRequestHeaders(requestHeaders);
-        ctxsloadBalancersResource.setAccountId(accountId);
-        return ctxsloadBalancersResource;
-    }
-*/    
+    }  
 }

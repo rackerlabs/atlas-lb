@@ -17,10 +17,4 @@ import java.util.Map;
 
 public interface CtxsLoadBalancerAdapter extends LoadBalancerAdapter {
 
-    void createLoadBalancer(LoadBalancerEndpointConfiguration config, CtxsLoadBalancer lb) throws AdapterException;
-
-    void updateLoadBalancer(LoadBalancerEndpointConfiguration config, CtxsLoadBalancer lb) throws AdapterException;
-
-    void deleteLoadBalancer(LoadBalancerEndpointConfiguration config, CtxsLoadBalancer lb) throws AdapterException;
-
 }

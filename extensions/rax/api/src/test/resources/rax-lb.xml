@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<loadBalancer xmlns="http://docs.openstack.org/atlas/api/v1.1"
+<rax:loadBalancer xmlns="http://docs.openstack.org/atlas/api/v1.1"
               xmlns:rax="http://docs.openstack.org/atlas/api/v1.1/extensions/rax"
               name="Test load-balancer"
               rax:crazyName="foo"
@@ -14,4 +14,4 @@
     <rax:accessList>
         <rax:networkItem address="1.1.1.1" ipVersion="IPV4" type="DENY"/>
     </rax:accessList>
-</loadBalancer>
+</rax:loadBalancer>

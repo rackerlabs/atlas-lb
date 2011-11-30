@@ -48,7 +48,7 @@
 
     <mapping map-null="false">
         <class-a bean-factory="org.openstack.atlas.rax.api.mapper.dozer.factory.RaxLoadBalancerFactory">
-            org.openstack.atlas.core.api.v1.LoadBalancer
+            org.openstack.atlas.api.v1.extensions.rax.LoadBalancer
         </class-a>
         <class-b>
             org.openstack.atlas.rax.domain.entity.RaxLoadBalancer
@@ -81,17 +81,17 @@
             <a>sessionPersistence</a>
             <b>sessionPersistence</b>
         </field>
+        <field>
+            <a>accessList</a>
+            <b>accessLists</b>
+            <a-hint>org.openstack.atlas.api.v1.extensions.rax.NetworkItem</a-hint>
+            <b-hint>org.openstack.atlas.rax.domain.entity.AccessList</b-hint>            
+        </field>        
         <field custom-converter="org.openstack.atlas.rax.api.mapper.dozer.converter.CrazyNameConverter">
             <a>otherAttributes</a>
             <b>crazyName</b>
             <a-hint>java.util.Map</a-hint>
             <b-hint>java.lang.String</b-hint>
-        </field>
-        <field custom-converter="org.openstack.atlas.rax.api.mapper.dozer.converter.AccessListConverter">
-            <a>anies</a>
-            <b>accessLists</b>
-            <a-hint>java.util.List</a-hint>
-            <b-hint>org.openstack.atlas.rax.domain.entity.AccessList</b-hint>
         </field>
     </mapping>
 

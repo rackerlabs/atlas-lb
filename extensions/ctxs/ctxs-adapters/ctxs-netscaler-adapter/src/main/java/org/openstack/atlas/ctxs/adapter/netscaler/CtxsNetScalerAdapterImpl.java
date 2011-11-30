@@ -34,11 +34,6 @@ public class CtxsNetScalerAdapterImpl extends NetScalerAdapterImpl implements Ct
 
     public static Log LOG = LogFactory.getLog(CtxsNetScalerAdapterImpl.class.getName());
     
-    public void createLoadBalancer(LoadBalancerEndpointConfiguration config, CtxsLoadBalancer lb)
-            throws AdapterException 
-    {
-        LOG.info("Reaching CtxsNetScalerAdapterImpl.createLoadBalancer()");// NOP
-    }
 
     @Override
     public void createLoadBalancer(LoadBalancerEndpointConfiguration config, LoadBalancer lb)
@@ -54,17 +49,4 @@ public class CtxsNetScalerAdapterImpl extends NetScalerAdapterImpl implements Ct
         }          
     }
     
-    
-    public void updateLoadBalancer(LoadBalancerEndpointConfiguration config, CtxsLoadBalancer lb)
-            throws AdapterException 
-    {
-        LOG.info("Reaching CtxsNetScalerAdapterImpl.updateLoadBalancer()");// NOP
-    }
-    
-    
-    public void deleteLoadBalancer(LoadBalancerEndpointConfiguration config, CtxsLoadBalancer lb)
-            throws AdapterException 
-    {
-        LOG.info("Reaching CtxsNetScalerAdapterImpl.deleteLoadBalancer()");// NOP
-    }
 }

@@ -4,8 +4,12 @@ import org.openstack.atlas.rax.datamodel.XmlHelper;
 import org.openstack.atlas.rax.domain.entity.AccessListType;
 import org.openstack.atlas.rax.domain.entity.RaxLoadBalancer;
 import org.openstack.atlas.rax.domain.helper.ExtensionConverter;
-import org.openstack.atlas.service.domain.entity.*;
+
+import org.openstack.atlas.core.api.v1.IpVersion;
+import org.openstack.atlas.api.v1.extensions.rax.NetworkItemType;
+
 import org.openstack.atlas.service.domain.stub.StubFactory;
+import org.openstack.atlas.service.domain.entity.*;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
@@ -13,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 public class RaxStubFactory extends StubFactory {
     protected static final Integer NETWORK_ITEM1_ID = 1;
@@ -20,38 +25,105 @@ public class RaxStubFactory extends StubFactory {
     protected static final String NETWORK_ITEM1_IP_VERSION = "IPV4";
     protected static final String NETWORK_ITEM1_TYPE = "DENY";
 
-    public static org.openstack.atlas.core.api.v1.LoadBalancer createHydratedDataModelLoadBalancerForRaxPost() throws JAXBException, ParserConfigurationException {
-        org.openstack.atlas.core.api.v1.LoadBalancer loadBalancer = StubFactory.createHydratedDataModelLoadBalancerForPost();
 
-        loadBalancer.getOtherAttributes().put(new QName("http://docs.openstack.org/atlas/api/v1.1/extensions/rax", "crazyName", "rax"), "foo");
+    public static org.openstack.atlas.api.v1.extensions.rax.LoadBalancer createMinimalDataModelLoadBalancerForPost() {
+        org.openstack.atlas.api.v1.extensions.rax.LoadBalancer loadBalancer = new org.openstack.atlas.api.v1.extensions.rax.LoadBalancer();
 
-        org.openstack.atlas.rax.domain.entity.AccessList accessList = new org.openstack.atlas.rax.domain.entity.AccessList();
-        accessList.setIpAddress(NETWORK_ITEM1_ADDRESS);
-        accessList.setIpVersion(IpVersion.valueOf(NETWORK_ITEM1_IP_VERSION));
-        accessList.setType(AccessListType.valueOf(NETWORK_ITEM1_TYPE));
-        Set<org.openstack.atlas.rax.domain.entity.AccessList> accessListSet = new HashSet<org.openstack.atlas.rax.domain.entity.AccessList>();
-        accessListSet.add(accessList);
+        loadBalancer.setName(LOAD_BALANCER_NAME);
 
-        org.openstack.atlas.api.v1.extensions.rax.AccessList dataModelAccessList = ExtensionConverter.convertAccessList(accessListSet);
-        loadBalancer.getAnies().add(XmlHelper.marshall(dataModelAccessList));
+        org.openstack.atlas.core.api.v1.Node node1 = createDataModelNodeForPost(null, NODE1_ADDRESS, NODE1_PORT, null, true, null);
+        final org.openstack.atlas.core.api.v1.Nodes nodes = new org.openstack.atlas.core.api.v1.Nodes();
+        nodes.getNodes().add(node1);
+        loadBalancer.getNodes().addAll(nodes.getNodes());
 
         return loadBalancer;
     }
+    
+    
+    public static org.openstack.atlas.api.v1.extensions.rax.LoadBalancer createHydratedDataModelLoadBalancerForRaxPost() throws JAXBException, ParserConfigurationException {
+        org.openstack.atlas.api.v1.extensions.rax.LoadBalancer loadBalancer = createMinimalDataModelLoadBalancerForPost();
 
-    public static org.openstack.atlas.core.api.v1.LoadBalancer createHydratedDataModelLoadBalancer() throws Exception {
-        org.openstack.atlas.core.api.v1.LoadBalancer loadBalancer = StubFactory.createHydratedDataModelLoadBalancer();
+        loadBalancer.setPort(LOAD_BALANCER_PORT);
+        loadBalancer.setProtocol(LOAD_BALANCER_PROTOCOL);
+        loadBalancer.setAlgorithm(LOAD_BALANCER_ALGORITHM);
+
+        loadBalancer.getNodes().get(0).setEnabled(NODE1_ENABLED);
+
+        org.openstack.atlas.core.api.v1.VirtualIp virtualIp1 = new org.openstack.atlas.core.api.v1.VirtualIp();
+        virtualIp1.setType(org.openstack.atlas.core.api.v1.VipType.fromValue(VIP1_TYPE));
+        virtualIp1.setIpVersion(IpVersion.fromValue(VIP1_VERSION));
+        loadBalancer.getVirtualIps().add(virtualIp1);
+
+        org.openstack.atlas.core.api.v1.VirtualIp virtualIp2 = new org.openstack.atlas.core.api.v1.VirtualIp();
+        virtualIp2.setId(VIP2_ID);
+
+        loadBalancer.setConnectionThrottle(createHydratedDataModelConnectionThrottle());
+        loadBalancer.setHealthMonitor(createHydratedDataModelHealthMonitor());
+        loadBalancer.setSessionPersistence(createHydratedDataModelSessionPersistence());
+
 
         loadBalancer.getOtherAttributes().put(new QName("http://docs.openstack.org/atlas/api/v1.1/extensions/rax", "crazyName", "rax"), "foo");
 
-        org.openstack.atlas.rax.domain.entity.AccessList accessList = new org.openstack.atlas.rax.domain.entity.AccessList();
-        accessList.setIpAddress(NETWORK_ITEM1_ADDRESS);
-        accessList.setIpVersion(IpVersion.valueOf(NETWORK_ITEM1_IP_VERSION));
-        accessList.setType(AccessListType.valueOf(NETWORK_ITEM1_TYPE));
-        Set<org.openstack.atlas.rax.domain.entity.AccessList> accessListSet = new HashSet<org.openstack.atlas.rax.domain.entity.AccessList>();
-        accessListSet.add(accessList);
+        List<org.openstack.atlas.api.v1.extensions.rax.NetworkItem> accessList = loadBalancer.getAccessList();
+        org.openstack.atlas.api.v1.extensions.rax.NetworkItem networkItem = new org.openstack.atlas.api.v1.extensions.rax.NetworkItem();
+        
+        networkItem.setAddress(NETWORK_ITEM1_ADDRESS);
+        networkItem.setIpVersion(IpVersion.valueOf(NETWORK_ITEM1_IP_VERSION));
+        networkItem.setType(NetworkItemType.valueOf(NETWORK_ITEM1_TYPE));
+        
+        accessList.add(networkItem);
 
-        org.openstack.atlas.api.v1.extensions.rax.AccessList dataModelAccessList = ExtensionConverter.convertAccessList(accessListSet);
-        loadBalancer.getAnies().add(XmlHelper.marshall(dataModelAccessList));
+        loadBalancer.setAccessList(accessList);
+
+
+        return loadBalancer;
+    }
+    
+
+    public static org.openstack.atlas.api.v1.extensions.rax.LoadBalancer createHydratedDataModelLoadBalancer() throws Exception {
+    
+         // TODO: Call minimal method first and use the values from it.
+        org.openstack.atlas.api.v1.extensions.rax.LoadBalancer loadBalancer = new org.openstack.atlas.api.v1.extensions.rax.LoadBalancer();
+
+        loadBalancer.setId(LOAD_BALANCER_ID);
+        loadBalancer.setName(LOAD_BALANCER_NAME);
+        loadBalancer.setPort(LOAD_BALANCER_PORT);
+        loadBalancer.setProtocol(LOAD_BALANCER_PROTOCOL);
+        loadBalancer.setAlgorithm(LOAD_BALANCER_ALGORITHM);
+        loadBalancer.setStatus(LOAD_BALANCER_STATUS);
+
+        org.openstack.atlas.core.api.v1.Node node1 = createDataModelNodeForPost(NODE1_ID, NODE1_ADDRESS, NODE1_PORT, NODE1_WEIGHT, NODE1_ENABLED, NODE1_STATUS);
+        org.openstack.atlas.core.api.v1.Node node2 = createDataModelNodeForPost(NODE2_ID, NODE2_ADDRESS, NODE2_PORT, NODE2_WEIGHT, NODE2_ENABLED, NODE2_STATUS);
+        final org.openstack.atlas.core.api.v1.Nodes nodes = new org.openstack.atlas.core.api.v1.Nodes();
+        nodes.getNodes().add(node1);
+        nodes.getNodes().add(node2);
+        loadBalancer.getNodes().addAll(nodes.getNodes());
+
+        org.openstack.atlas.core.api.v1.VirtualIp virtualIp1 = new org.openstack.atlas.core.api.v1.VirtualIp();
+        virtualIp1.setId(VIP1_ID);
+        virtualIp1.setAddress(VIP1_ADDRESS);
+        virtualIp1.setType(org.openstack.atlas.core.api.v1.VipType.fromValue(VIP1_TYPE));
+        virtualIp1.setIpVersion(IpVersion.fromValue(VIP1_VERSION));
+        loadBalancer.getVirtualIps().add(virtualIp1);
+
+        loadBalancer.setConnectionThrottle(createHydratedDataModelConnectionThrottle());
+        loadBalancer.setHealthMonitor(createHydratedDataModelHealthMonitor());
+        loadBalancer.setSessionPersistence(createHydratedDataModelSessionPersistence());
+        loadBalancer.setCreated(Calendar.getInstance());
+        loadBalancer.setUpdated(Calendar.getInstance());
+
+        loadBalancer.getOtherAttributes().put(new QName("http://docs.openstack.org/atlas/api/v1.1/extensions/rax", "crazyName", "rax"), "foo");
+
+        List<org.openstack.atlas.api.v1.extensions.rax.NetworkItem> accessList = loadBalancer.getAccessList();
+        org.openstack.atlas.api.v1.extensions.rax.NetworkItem networkItem = new org.openstack.atlas.api.v1.extensions.rax.NetworkItem();
+        
+        networkItem.setAddress(NETWORK_ITEM1_ADDRESS);
+        networkItem.setIpVersion(IpVersion.valueOf(NETWORK_ITEM1_IP_VERSION));
+        networkItem.setType(NetworkItemType.valueOf(NETWORK_ITEM1_TYPE));
+        
+        accessList.add(networkItem);
+
+        loadBalancer.setAccessList(accessList);
 
         return loadBalancer;
     }
@@ -115,7 +187,7 @@ public class RaxStubFactory extends StubFactory {
         org.openstack.atlas.rax.domain.entity.AccessList accessList = new org.openstack.atlas.rax.domain.entity.AccessList();
         accessList.setId(NETWORK_ITEM1_ID);
         accessList.setIpAddress(NETWORK_ITEM1_ADDRESS);
-        accessList.setIpVersion(IpVersion.valueOf(NETWORK_ITEM1_IP_VERSION));
+        accessList.setIpVersion(org.openstack.atlas.service.domain.entity.IpVersion.valueOf(NETWORK_ITEM1_IP_VERSION));
         accessList.setType(AccessListType.valueOf(NETWORK_ITEM1_TYPE));
         Set<org.openstack.atlas.rax.domain.entity.AccessList> accessLists = new HashSet<org.openstack.atlas.rax.domain.entity.AccessList>();
         accessLists.add(accessList);

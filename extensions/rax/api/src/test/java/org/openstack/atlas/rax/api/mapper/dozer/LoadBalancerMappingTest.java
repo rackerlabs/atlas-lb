@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.openstack.atlas.core.api.v1.ConnectionThrottle;
-import org.openstack.atlas.core.api.v1.LoadBalancer;
+import org.openstack.atlas.api.v1.extensions.rax.LoadBalancer;
 import org.openstack.atlas.core.api.v1.SessionPersistence;
 import org.openstack.atlas.core.api.v1.VipType;
 import org.openstack.atlas.datamodel.CoreNodeStatus;
@@ -119,14 +119,14 @@ public class LoadBalancerMappingTest {
         @Test
         public void shouldMapAccessListFromAniesList() {
             Set<AccessList> accessListSet = domainLoadBalancer.getAccessLists();
-            org.openstack.atlas.api.v1.extensions.rax.AccessList apiAccessList = ExtensionObjectMapper.getAnyElement(dataModelLoadBalancer.getAnies(), org.openstack.atlas.api.v1.extensions.rax.AccessList.class);
+            List<org.openstack.atlas.api.v1.extensions.rax.NetworkItem> apiAccessList = dataModelLoadBalancer.getAccessList();
 
             Assert.assertFalse(accessListSet.isEmpty());
 
             for (AccessList accessList : accessListSet) {
-                Assert.assertEquals(apiAccessList.getNetworkItems().get(0).getAddress(), accessList.getIpAddress());
-                Assert.assertEquals(apiAccessList.getNetworkItems().get(0).getIpVersion().name(), accessList.getIpVersion().name());
-                Assert.assertEquals(apiAccessList.getNetworkItems().get(0).getType().name(), accessList.getType().name());
+                Assert.assertEquals(apiAccessList.get(0).getAddress(), accessList.getIpAddress());
+                Assert.assertEquals(apiAccessList.get(0).getIpVersion().name(), accessList.getIpVersion().name());
+                Assert.assertEquals(apiAccessList.get(0).getType().name(), accessList.getType().name());
             }
         }
     }
@@ -246,13 +246,14 @@ public class LoadBalancerMappingTest {
 
         @Test
         public void shouldMapAccessListWhenAccessListExists() {
-            org.openstack.atlas.api.v1.extensions.rax.AccessList apiAccessList = ExtensionObjectMapper.getAnyElement(dataModelLoadBalancer.getAnies(), org.openstack.atlas.api.v1.extensions.rax.AccessList.class);
+            List<org.openstack.atlas.api.v1.extensions.rax.NetworkItem> apiAccessList = dataModelLoadBalancer.getAccessList();
+            
             AccessList accessList = domainLoadBalancer.getAccessLists().iterator().next();
 
             Assert.assertNotNull(apiAccessList);
-            Assert.assertEquals(accessList.getIpAddress(), apiAccessList.getNetworkItems().get(0).getAddress());
-            Assert.assertEquals(accessList.getIpVersion().name(), apiAccessList.getNetworkItems().get(0).getIpVersion().name());
-            Assert.assertEquals(accessList.getType().name(), apiAccessList.getNetworkItems().get(0).getType().name());
+            Assert.assertEquals(accessList.getIpAddress(), apiAccessList.get(0).getAddress());
+            Assert.assertEquals(accessList.getIpVersion().name(), apiAccessList.get(0).getIpVersion().name());
+            Assert.assertEquals(accessList.getType().name(), apiAccessList.get(0).getType().name());
         }
     }
 }

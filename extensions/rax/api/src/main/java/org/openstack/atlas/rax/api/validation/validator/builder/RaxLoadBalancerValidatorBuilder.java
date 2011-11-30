@@ -1,5 +1,6 @@
 package org.openstack.atlas.rax.api.validation.validator.builder;
 
+import org.openstack.atlas.api.v1.extensions.rax.LoadBalancer;
 import org.openstack.atlas.api.validation.validator.builder.*;
 import org.openstack.atlas.api.validation.verifier.MustBeEmptyOrNull;
 import org.openstack.atlas.api.validation.verifier.Verifier;
@@ -8,6 +9,8 @@ import org.openstack.atlas.datamodel.AlgorithmType;
 import org.openstack.atlas.datamodel.ProtocolType;
 import org.openstack.atlas.rax.api.mapper.dozer.converter.ExtensionObjectMapper;
 import org.openstack.atlas.rax.api.validation.validator.RaxLoadBalancerValidator;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
@@ -33,14 +36,23 @@ public class RaxLoadBalancerValidatorBuilder extends LoadBalancerValidatorBuilde
                                            SessionPersistenceValidatorBuilder sessionPersistenceValidatorBuilder) {
         super(algorithmType, protocolType, nodeValidatorBuilder, virtualIpValidatorBuilder, healthMonitorValidatorBuilder, connectionThrottleValidatorBuilder, sessionPersistenceValidatorBuilder);
 
-        // POST EXPECTATIONS
-        result(validationTarget().getAnies()).if_().exist().then().must().delegateTo(new RaxLoadBalancerValidator().getValidator(), POST).forContext(POST);
-        result(validationTarget().getOtherAttributes()).if_().not().adhereTo(new MustBeEmptyOrNull()).then().must().adhereTo(new Verifier<Map<QName, String>>() {
-            @Override
-            public VerifierResult verify(Map<QName, String> otherAttributes) {
-                String crazyNameValue = ExtensionObjectMapper.getOtherAttribute(otherAttributes, "crazyName");
-                return new VerifierResult(crazyNameValue.equals("foo"));
-            }
-        }).forContext(POST).withMessage("'crazyName' attribute must equal foo!");
+
+        Object validationTarget = validationTarget();
+
+                
+        if (validationTarget instanceof LoadBalancer) {
+            LoadBalancer ctxsLoadBalancer = (LoadBalancer) validationTarget;
+
+            // POST EXPECTATIONS            
+            result(ctxsLoadBalancer.getAccessList()).if_().exist().then().must().delegateTo(new RaxLoadBalancerValidator().getValidator(), POST).forContext(POST); 
+            result(ctxsLoadBalancer.getOtherAttributes()).if_().not().adhereTo(new MustBeEmptyOrNull()).then().must().adhereTo(new Verifier<Map<QName, String>>() {
+                @Override
+                public VerifierResult verify(Map<QName, String> otherAttributes) {
+                    String crazyNameValue = ExtensionObjectMapper.getOtherAttribute(otherAttributes, "crazyName");
+                    return new VerifierResult(crazyNameValue.equals("foo"));
+                }
+            }).forContext(POST).withMessage("'crazyName' attribute must equal foo!");
+                    
+        }
     }
 }

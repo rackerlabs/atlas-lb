@@ -490,6 +490,7 @@ public class LoadBalancerValidatorTest {
             assertFalse(result.passedValidation());
         }
 
+        /*
         @Test
         public void shouldAcceptWhenOnlyOtherAttributesExist() {
             loadBalancer = new LoadBalancer();
@@ -497,6 +498,7 @@ public class LoadBalancerValidatorTest {
             ValidatorResult result = validator.validate(loadBalancer, PUT);
             assertTrue(result.passedValidation());
         }
+        */
     }
 
     private static String generateStringWithLength(int length) {

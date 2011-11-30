@@ -7,14 +7,17 @@ import org.junit.runner.RunWith;
 import org.openstack.atlas.api.validation.result.ValidatorResult;
 import org.openstack.atlas.api.validation.validator.LoadBalancerValidator;
 import org.openstack.atlas.api.validation.validator.builder.*;
+import org.openstack.atlas.api.v1.extensions.rax.LoadBalancer;
 import org.openstack.atlas.core.api.v1.*;
 import org.openstack.atlas.datamodel.*;
 import org.openstack.atlas.rax.api.validation.validator.builder.RaxLoadBalancerValidatorBuilder;
 import org.openstack.atlas.rax.datamodel.RaxAlgorithmType;
 import org.openstack.atlas.rax.datamodel.RaxProtocolType;
-import org.openstack.atlas.service.domain.stub.StubFactory;
+import org.openstack.atlas.rax.domain.stub.RaxStubFactory;
 
 import javax.xml.namespace.QName;
+import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.GregorianCalendar;
 
 import static junit.framework.Assert.assertEquals;
@@ -31,7 +34,7 @@ public class RaxLoadBalancerValidatorTest {
 
         @Before
         public void setUp() {
-            loadBalancer = StubFactory.createMinimalDataModelLoadBalancerForPost();
+            loadBalancer = RaxStubFactory.createMinimalDataModelLoadBalancerForPost();
             validator = new LoadBalancerValidator(
                     new RaxLoadBalancerValidatorBuilder(
                             new RaxAlgorithmType(),
@@ -53,15 +56,15 @@ public class RaxLoadBalancerValidatorTest {
         }
 
         @Test
-        public void shouldReturnTrueWhenGivenAValidFullyHydratedLoadBalancer() {
-            loadBalancer = StubFactory.createHydratedDataModelLoadBalancerForPost();
+        public void shouldReturnTrueWhenGivenAValidFullyHydratedLoadBalancer() throws JAXBException, ParserConfigurationException {
+            loadBalancer = RaxStubFactory.createHydratedDataModelLoadBalancerForRaxPost();
             ValidatorResult result = validator.validate(loadBalancer, POST);
             assertTrue(result.passedValidation());
         }
 
         @Test
-        public void shouldRejectIdForVipIfTypeIsSet() {
-            loadBalancer = StubFactory.createHydratedDataModelLoadBalancerForPost();
+        public void shouldRejectIdForVipIfTypeIsSet() throws JAXBException, ParserConfigurationException {
+            loadBalancer = RaxStubFactory.createHydratedDataModelLoadBalancerForRaxPost();
             loadBalancer.getVirtualIps().get(0).setId(1234);
 
             ValidatorResult result = validator.validate(loadBalancer, POST);
