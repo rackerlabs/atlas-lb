@@ -26,7 +26,6 @@
             <xsd:element name="healthMonitor" type="tns:healthMonitor" minOccurs="0"/>
             <xsd:element name="sessionPersistence" type="tns:sessionPersistence" minOccurs="0"/>
             <xsd:element name="connectionThrottle" type="tns:connectionThrottle" minOccurs="0"/>
-            <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:int"/>
         <xsd:attribute name="name" type="xsd:string"/>
@@ -36,7 +35,6 @@
         <xsd:attribute name="status" type="xsd:string"/>
         <xsd:attribute name="created" type="xsd:dateTime"/>
         <xsd:attribute name="updated" type="xsd:dateTime"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="healthMonitor" type="tns:healthMonitor"/>
@@ -46,7 +44,6 @@
         <xsd:attribute name="timeout" type="xsd:int"/>
         <xsd:attribute name="attemptsBeforeDeactivation" type="xsd:int"/>
         <xsd:attribute name="path" type="xsd:string"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="virtualIps" type="tns:virtualIps"/>
@@ -62,7 +59,6 @@
         <xsd:attribute name="address" type="xsd:string"/>
         <xsd:attribute name="ipVersion" type="tns:ipVersion"/>
         <xsd:attribute name="type" type="tns:vipType"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:simpleType name="vipType">
@@ -87,20 +83,17 @@
         <xsd:attribute name="weight" type="xsd:int"/>
         <xsd:attribute name="enabled" type="xsd:boolean"/>
         <xsd:attribute name="status" type="xsd:string"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="sessionPersistence" type="tns:sessionPersistence"/>
     <xsd:complexType name="sessionPersistence">
         <xsd:attribute name="persistenceType" type="xsd:string"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="connectionThrottle" type="tns:connectionThrottle"/>
     <xsd:complexType name="connectionThrottle">
         <xsd:attribute name="maxRequestRate" type="xsd:int"/>
         <xsd:attribute name="rateInterval" type="xsd:int" />
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="algorithms" type="tns:algorithms"/>
@@ -112,7 +105,6 @@
 
     <xsd:complexType name="algorithm">
         <xsd:attribute name="name" type="xsd:string"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:simpleType name="ipVersion">
@@ -134,11 +126,9 @@
     <xsd:complexType name="loadBalancerUsage">
         <xsd:sequence>
             <xsd:element name="loadBalancerUsageRecord" type="tns:loadBalancerUsageRecord" minOccurs="0" maxOccurs="unbounded"/>
-            <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
         <xsd:attribute name="loadBalancerId" type="xsd:int"/>
         <xsd:attribute name="loadBalancerName" type="xsd:string"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="loadBalancerUsageRecords" type="tns:loadBalancerUsageRecords"/>
@@ -156,7 +146,6 @@
         <xsd:attribute name="transferBytesOut" type="xsd:long"/>
         <xsd:attribute name="startTime" type="xsd:dateTime"/>
         <xsd:attribute name="endTime" type="xsd:dateTime"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
     
     <xsd:element name="protocols" type="tns:protocols"/>
@@ -169,7 +158,6 @@
     <xsd:complexType name="protocol">
         <xsd:attribute name="name" type="xsd:string"/>
         <xsd:attribute name="port" type="xsd:int"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
     
     <xsd:element name="limitTypes" type="tns:limitTypes"/>
@@ -184,7 +172,6 @@
         <xsd:attribute name="name" type="xsd:string"/>
         <xsd:attribute name="defaultValue" type="xsd:int"/>
         <xsd:attribute name="description" type="xsd:string"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="limits" type="tns:limits"/>
@@ -192,7 +179,6 @@
         <xsd:sequence>
             <xsd:element name="rates" type="tns:rates"/>
             <xsd:element name="absolute" type="tns:absolute"/>
-            <xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -210,7 +196,6 @@
         </xsd:sequence>
         <xsd:attribute name="uri" type="xsd:string"/>
         <xsd:attribute name="regex" type="xsd:string"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="rateLimit" type="tns:rateLimit"/>
@@ -220,7 +205,6 @@
         <xsd:attribute name="remaining" type="xsd:long"/>
         <xsd:attribute name="unit" type="xsd:string"/>
         <xsd:attribute name="next-available" type="xsd:dateTime"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="absolute" type="tns:absolute"/>
@@ -228,13 +212,11 @@
         <xsd:sequence>
             <xsd:element name="limit" type="tns:absoluteLimit" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 
     <xsd:element name="absoluteLimit" type="tns:absoluteLimit"/>
     <xsd:complexType name="absoluteLimit">
         <xsd:attribute name="name" type="xsd:string"/>
         <xsd:attribute name="value" type="xsd:int"/>
-        <xsd:anyAttribute namespace="##other" processContents="strict"/>
     </xsd:complexType>
 </xsd:schema>
