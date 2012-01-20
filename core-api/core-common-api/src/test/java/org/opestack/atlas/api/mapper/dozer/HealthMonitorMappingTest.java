@@ -95,9 +95,11 @@ public class HealthMonitorMappingTest {
             Assert.assertNull(apiHealthMonitor.getPath());
         }
 
+/*
         @Test
         public void shouldNotMapExtensionAttributes() {
             Assert.assertTrue(apiHealthMonitor.getOtherAttributes().isEmpty());
         }
+*/
     }
 }

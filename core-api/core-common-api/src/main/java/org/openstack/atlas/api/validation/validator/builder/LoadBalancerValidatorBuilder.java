@@ -69,7 +69,7 @@ public class LoadBalancerValidatorBuilder extends ValidatorBuilder<LoadBalancer>
         must().adhereTo(new Verifier<LoadBalancer>() {
             @Override
             public VerifierResult verify(LoadBalancer obj) {
-                return new VerifierResult(obj.getName() != null || obj.getAlgorithm() != null || !obj.getOtherAttributes().isEmpty());
+                return new VerifierResult(obj.getName() != null || obj.getAlgorithm() != null /*|| !obj.getOtherAttributes().isEmpty()*/);
             }
         }).forContext(PUT).withMessage("The load balancer must have at least one attribute to update.");
         result(validationTarget().getNodes()).must().beEmptyOrNull().forContext(PUT).withMessage("Please visit {account id}/loadbalancers/{load balancer id}/nodes to configure nodes.");
