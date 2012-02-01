@@ -27,7 +27,6 @@ public class RaxHostsResource extends CommonDependencyProvider {
 
     @POST
     public Response create(Host _host) {
-
         ValidatorResult result = validator.validate(_host, HttpRequestType.POST);
         if (!result.passedValidation()) {
             return ResponseFactory.getValidationFaultResponse(result);

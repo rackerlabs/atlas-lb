@@ -30,7 +30,7 @@ public class RaxHostValidator implements ResourceValidator<Host> {
         validator = build(new ValidatorBuilder<Host>(Host.class) {
 
             {
-                /*result(validationTarget().getId()).must().not().exist().forContext(POST, PUT).withMessage("Host id can not be modified.");
+                result(validationTarget().getId()).must().not().exist().forContext(POST, PUT).withMessage("Host id can not be modified.");
                 result(validationTarget().getIpv4Public()).if_().exist().then().must().beValidIpv4Address().forContext(POST, PUT).withMessage("ipv4Public was not a valid IPv4 address");
                 result(validationTarget().getIpv4Servicenet()).if_().exist().then().must().beValidIpv4Address().forContext(POST, PUT).withMessage("ipv4Servicenet was not a valid IPv4 address");
                 result(validationTarget().getIpv6Public()).if_().exist().then().must().beValidIpv6Address().forContext(POST, PUT).withMessage("ipv6Public was not a valid IPv6 address");
@@ -43,7 +43,7 @@ public class RaxHostValidator implements ResourceValidator<Host> {
                 result(validationTarget().getUtilization()).must().not().exist().forContext(PUT).withMessage("Must not specify the utilization.");
                 result(validationTarget().getType()).must().not().exist().forContext(PUT).withMessage("Must not specify the type.");
 
-                result(validationTarget().getId()).must().exist().forContext(LOADBALANCER_PUT).withMessage("Host Id must be present on Loadbalancer Host Put method");
+                //result(validationTarget().getId()).must().exist().forContext(LOADBALANCER_PUT).withMessage("Host Id must be present on Loadbalancer Host Put method");
                 result(validationTarget().getName()).must().exist().forContext(POST).withMessage("Name must be present for host");
                 result(validationTarget().getClusterId()).must().exist().forContext(POST).withMessage("ClusterId must be present for host");
                 result(validationTarget().getCoreDeviceId()).must().exist().forContext(POST).withMessage("CoreDeviceId must be preset for host");
@@ -68,7 +68,7 @@ public class RaxHostValidator implements ResourceValidator<Host> {
                     }
                 }).withMessage("Soap end point active must be of boolean value");
                 result(validationTarget().getClusterId()).must().not().exist().forContext(PUT).withMessage("Cluster Id is not mutable");
-                //REASSIGN_HOST context
+                /*//REASSIGN_HOST context
                 result(validationTarget().getId()).must().exist().forContext(ReassignHostContext.REASSIGN_HOST).withMessage("ID must be present for host.");
                 result(validationTarget().getName()).must().not().exist().forContext(ReassignHostContext.REASSIGN_HOST).withMessage("Must not provide name for this request.");
                 result(validationTarget().getClusterId()).must().not().exist().forContext(ReassignHostContext.REASSIGN_HOST).withMessage("Must not provide cluster id for this request.");
@@ -78,8 +78,8 @@ public class RaxHostValidator implements ResourceValidator<Host> {
                 result(validationTarget().getMaxConcurrentConnections()).must().not().exist().forContext(ReassignHostContext.REASSIGN_HOST).withMessage("Must not provide max concurrent connections for this request.");
                 result(validationTarget().getManagementIp()).must().not().exist().forContext(ReassignHostContext.REASSIGN_HOST).withMessage("Must not provide management ip for this request.");
                 result(validationTarget().getManagementSoapInterface()).must().not().exist().forContext(ReassignHostContext.REASSIGN_HOST).withMessage("Must not provide management soap interface for this request.");
+*//*
 */
-
             }
         });
     }
