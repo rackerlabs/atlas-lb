@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Controller
@@ -26,6 +28,7 @@ public class RaxHostsResource extends CommonDependencyProvider {
     protected RaxHostService raxHostService;
 
     @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response create(Host _host) {
         ValidatorResult result = validator.validate(_host, HttpRequestType.POST);
         if (!result.passedValidation()) {
