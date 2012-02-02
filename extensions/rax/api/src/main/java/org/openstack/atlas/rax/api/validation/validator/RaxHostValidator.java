@@ -38,10 +38,6 @@ public class RaxHostValidator implements ResourceValidator<Host> {
 
                 //result(validationTarget().getZone()).must().not().exist().forContext(PUT).withMessage("Must not provide a zone.");
                 result(validationTarget().getClusterId()).must().not().exist().forContext(PUT).withMessage("Must not provide a cluster id.");
-                result(validationTarget().getNumberOfLoadBalancingConfigurations()).must().not().exist().forContext(PUT).withMessage("Must not specify the number of load balancing configurations.");
-                result(validationTarget().getNumberOfUniqueCustomers()).must().not().exist().forContext(PUT).withMessage("Must not specify the number of unique customers.");
-                result(validationTarget().getUtilization()).must().not().exist().forContext(PUT).withMessage("Must not specify the utilization.");
-                result(validationTarget().getType()).must().not().exist().forContext(PUT).withMessage("Must not specify the type.");
 
                 //result(validationTarget().getId()).must().exist().forContext(LOADBALANCER_PUT).withMessage("Host Id must be present on Loadbalancer Host Put method");
                 result(validationTarget().getName()).must().exist().forContext(POST).withMessage("Name must be present for host");
@@ -50,17 +46,12 @@ public class RaxHostValidator implements ResourceValidator<Host> {
                 result(validationTarget().getStatus()).if_().exist().then().must().adhereTo(new MustBeInArray(HostStatus.values())).forContext(POST).withMessage("Status must be a valid host status.");
                 result(validationTarget().getStatus()).must().not().exist().forContext(POST).withMessage("Status must not be present for host");
                 //result(validationTarget().getZone()).must().exist().forContext(POST).withMessage("Zone must be present for host");
-                result(validationTarget().getMaxConcurrentConnections()).must().exist().forContext(POST).withMessage("MaxConcurrentConnections must be preset for host");
-                result(validationTarget().getManagementIp()).must().exist().forContext(POST).withMessage("ManagementIpAddress must be preset for host");
-                result(validationTarget().getManagementSoapInterface()).must().exist().forContext(POST).withMessage("ManagementSoapInterface must be preset for host");
-                result(validationTarget().getManagementIp()).must().exist().forContext(POST).withMessage("ManagementIp must be preset for host");
-                result(validationTarget().getTrafficManagerName()).must().exist().forContext(POST).withMessage("TrafficManagerName must be present for host");
                 result(validationTarget().getIpv4Public()).must().exist().forContext(POST).withMessage("ipv4Public must be present in host"); // JIRA:882
                 result(validationTarget().getIpv4Servicenet()).must().exist().forContext(POST).withMessage("ipv4Servicenet must be present in host"); // JIRA:882
                 // result(validationTarget().getIpv6Public()).must().exist().forContext(POST).withMessage("ipv6Public was must be present in host");
                 // result(validationTarget().getIpv6Servicenet()).must().exist().forContext(POST).withMessage("ipv6Servicenet must be present in host");
-                result(validationTarget().isSoapEndpointActive()).must().exist().forContext(POST).withMessage("SoapEndPointActive must be preset for host");
-                result(validationTarget().isSoapEndpointActive()).if_().exist().then().must().adhereTo(new Verifier<Boolean>() {
+                result(validationTarget().isEndpointActive()).must().exist().forContext(POST).withMessage("SoapEndPointActive must be preset for host");
+                result(validationTarget().isEndpointActive()).if_().exist().then().must().adhereTo(new Verifier<Boolean>() {
 
                     @Override
                     public VerifierResult verify(Boolean isSoapEndpointActive) {

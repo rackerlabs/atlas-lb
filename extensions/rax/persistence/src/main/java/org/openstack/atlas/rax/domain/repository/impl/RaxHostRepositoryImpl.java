@@ -3,11 +3,13 @@ package org.openstack.atlas.rax.domain.repository.impl;
 import org.openstack.atlas.rax.domain.entity.RaxHost;
 import org.openstack.atlas.rax.domain.repository.RaxHostRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Transactional
 @Repository
 public class RaxHostRepositoryImpl implements RaxHostRepository {
 
@@ -15,8 +17,8 @@ public class RaxHostRepositoryImpl implements RaxHostRepository {
     private EntityManager entityManager;
 
     public List<RaxHost> getAllHosts() {
-        String hqlStr = "from RaxHost h where h.hostStatus in ('ACTIVE_TARGET', 'FAILOVER') ";
-        List<RaxHost> raxHosts = entityManager.createQuery(hqlStr).getResultList();
+        String query = "from RaxHost h where h.hostStatus in ('ACTIVE_TARGET', 'FAILOVER') ";
+        List<RaxHost> raxHosts = entityManager.createQuery(query).getResultList();
         return raxHosts;
     }
 

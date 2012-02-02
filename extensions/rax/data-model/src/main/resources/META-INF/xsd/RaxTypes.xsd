@@ -85,21 +85,15 @@
         <xsd:attribute name="name" type="xsd:string"/>
         <xsd:attribute name="clusterId" type="xsd:int"/>
         <xsd:attribute name="coreDeviceId" type="xsd:string"/>
-        <!--<xsd:attribute name="zone" type="tns:zone"/>-->
         <xsd:attribute name="status" type="tns:hostStatus"/>
-        <xsd:attribute name="type" type="tns:hostType"/>
-        <xsd:attribute name="maxConcurrentConnections" type="xsd:int"/>
-        <xsd:attribute name="managementIp" type="xsd:string"/>
-        <xsd:attribute name="trafficManagerName" type="xsd:string"/>
-        <xsd:attribute name="soapEndpointActive" type="xsd:boolean"/>
-        <xsd:attribute name="managementSoapInterface" type="xsd:string"/>
-        <xsd:attribute name="utilization" type="xsd:string"/>
-        <xsd:attribute name="numberOfLoadBalancingConfigurations" type="xsd:int"/>
-        <xsd:attribute name="numberOfUniqueCustomers" type="xsd:int"/>
+        <xsd:attribute name="endpoint" type="xsd:string" />
+        <xsd:attribute name="endpointActive" type="xsd:boolean"/>
         <xsd:attribute name="ipv4Servicenet" type="xsd:string"/>
         <xsd:attribute name="ipv6Servicenet" type="xsd:string"/>
         <xsd:attribute name="ipv4Public" type="xsd:string"/>
         <xsd:attribute name="ipv6Public" type="xsd:string"/>
+        <xsd:attribute name="username" type="xsd:string" />
+        <xsd:attribute name="password" type="xsd:string"/>
     </xsd:complexType>
 
     <xsd:simpleType name="hostStatus">
@@ -111,14 +105,5 @@
             <xsd:enumeration value="FAILOVER"/>
         </xsd:restriction>
     </xsd:simpleType>
-
-    <xsd:simpleType name="hostType">
-       <xsd:restriction base="xsd:string">
-           <xsd:enumeration value="ACTIVE"/>
-           <xsd:enumeration value="FAILOVER"/>
-       </xsd:restriction>
-    </xsd:simpleType>
-
-
 
 </xsd:schema>

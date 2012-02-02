@@ -20,20 +20,12 @@
             <b>cluster.id</b>
         </field>
         <field>
-            <a>managementIp</a>
-            <b>managementIp</b>
-        </field>
-        <field>
-            <a>managementSoapInterface</a>
+            <a>endpoint</a>
             <b>endpoint</b>
         </field>
         <field>
-            <a>trafficManagerName</a>
-            <b>trafficManagerName</b>
-        </field>
-        <field>
-            <a get-method="isSoapEndpointActive">soapEndpointActive</a>
-            <b get-method="isSoapEndpointActive">soapEndpointActive</b>
+            <a get-method="isEndpointActive">endpointActive</a>
+            <b get-method="isEndpointActive">endpointActive</b>
         </field>
     </mapping>
 

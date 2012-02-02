@@ -23,4 +23,15 @@ public class RaxHost extends Host implements Serializable {
     public void setFoo(String foo) {
         this.foo = foo;
     }
+
+    @Column(name = "core_device_id", nullable = false)
+    private String coreDeviceId;
+
+    public String getCoreDeviceId() {
+        return coreDeviceId;
+    }
+
+    public void setCoreDeviceId(String coreDeviceId) {
+        this.coreDeviceId = coreDeviceId;
+    }
 }

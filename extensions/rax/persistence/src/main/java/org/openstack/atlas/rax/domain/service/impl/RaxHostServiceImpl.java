@@ -11,6 +11,7 @@ import org.openstack.atlas.service.domain.exception.EntityNotFoundException;
 import org.openstack.atlas.service.domain.exception.UnprocessableEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class RaxHostServiceImpl implements RaxHostService {
     @Autowired
     private RaxClusterRepository raxClusterRepository;
 
+    @Transactional
     @Override
     public void create(RaxHost raxHost) throws EntityNotFoundException, UnprocessableEntityException {
         RaxCluster raxCluster = raxClusterRepository.getById(raxHost.getCluster().getId());

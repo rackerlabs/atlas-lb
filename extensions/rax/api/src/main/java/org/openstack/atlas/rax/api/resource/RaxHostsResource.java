@@ -38,7 +38,7 @@ public class RaxHostsResource extends CommonDependencyProvider {
             RaxHost raxHost = dozerMapper.map(_host, RaxHost.class);
             raxHostService.create(raxHost);
 
-            return Response.status(200).entity(Response.Status.ACCEPTED).build();
+            return Response.status(Response.Status.ACCEPTED).entity(dozerMapper.map(raxHost, Host.class)).build();
         } catch (Exception e) {
             return ResponseFactory.getErrorResponse(e, null, null);
         }

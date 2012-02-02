@@ -18,7 +18,7 @@ public class RaxClusterRepositoryImpl implements RaxClusterRepository {
     public RaxCluster getById(Integer clusterId) throws EntityNotFoundException {
         RaxCluster raxCluster = entityManager.find(RaxCluster.class, clusterId);
         if (raxCluster == null) {
-            throw new EntityNotFoundException(ErrorMessages.CLUSTER_NOT_FOUND);
+            throw new EntityNotFoundException(ErrorMessages.CLUSTER_NOT_FOUND.getMessage(clusterId));
         }
         return raxCluster;
     }
