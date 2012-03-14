@@ -1,5 +1,6 @@
 package org.openstack.atlas.api.mapper.dozer.converter;
 
+import org.apache.log4j.Logger;
 import org.dozer.CustomConverter;
 import org.openstack.atlas.core.api.v1.IpVersion;
 import org.openstack.atlas.core.api.v1.VipType;
@@ -74,10 +75,16 @@ public class VirtualIpConverter implements CustomConverter {
 
         if (sourceFieldValue instanceof ArrayList) {
             ArrayList<org.openstack.atlas.core.api.v1.VirtualIp> vips = (ArrayList<org.openstack.atlas.core.api.v1.VirtualIp>) sourceFieldValue;
+
+            if (vips.size() > 1)
+                throw new RuntimeException("Cannot specify more than one Virtual IP per loadBalancer");
+
             Set<LoadBalancerJoinVip> loadBalancerJoinVipSet = new HashSet<LoadBalancerJoinVip>();
             Set<LoadBalancerJoinVip6> loadBalancerJoinVip6Set = new HashSet<LoadBalancerJoinVip6>();
 
-            for (VirtualIp vip : vips) {
+            if (vips.size() > 0) {
+                VirtualIp vip = vips.get(0);
+
                 if (vip.getId() != null) {
                     if (vip.getId() >= VIP_ID_DEMARCATION) {
                         loadBalancerJoinVip6Set = buildSharedVip6(vip);
@@ -104,8 +111,8 @@ public class VirtualIpConverter implements CustomConverter {
                         loadBalancerJoinVip6.setVirtualIp(domainVip);
                         loadBalancerJoinVip6Set.add(loadBalancerJoinVip6);
 
-                        vip.setIpVersion(IpVersion.IPV4);
-                        loadBalancerJoinVipSet = buildLoadBalancerJoinVipSet(vip);
+                        //vip.setIpVersion(IpVersion.IPV4);
+                        //loadBalancerJoinVipSet = buildLoadBalancerJoinVipSet(vip);
 
                     }else if (vip.getType() != null && vip.getType().equals(VipType.PRIVATE)) {
                         vip.setIpVersion(IpVersion.IPV4);

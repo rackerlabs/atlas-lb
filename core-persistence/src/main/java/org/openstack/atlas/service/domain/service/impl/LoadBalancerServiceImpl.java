@@ -120,8 +120,9 @@ public class LoadBalancerServiceImpl implements LoadBalancerService {
             try {
                 LoadBalancer dbLoadBalancer = loadBalancerRepository.getByIdAndAccountId(loadBalancerId, accountId);
                 if (!dbLoadBalancer.getStatus().equals(CoreLoadBalancerStatus.ACTIVE)) {
+                    // We allow users to delete loadBalancers that are in a bad state. We simply log a warning.
                     LOG.warn(StringHelper.immutableLoadBalancer(dbLoadBalancer));
-                    badLbStatusIds.add(loadBalancerId);
+                    //badLbStatusIds.add(loadBalancerId);
                 }
             } catch (EntityNotFoundException e) {
                 badLbIds.add(loadBalancerId);
