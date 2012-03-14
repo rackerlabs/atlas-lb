@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/ctxs-adapters/ctxs-adapter-common/atlas-ctxs-adapter-common.iml" filepath="$PROJECT_DIR$/extensions/ctxs/ctxs-adapters/ctxs-adapter-common/atlas-ctxs-adapter-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/ctxs-adapters/atlas-ctxs-adapters.iml" filepath="$PROJECT_DIR$/extensions/ctxs/ctxs-adapters/atlas-ctxs-adapters.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/ctxs-api/atlas-ctxs-api.iml" filepath="$PROJECT_DIR$/extensions/ctxs/ctxs-api/atlas-ctxs-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/ctxs-api/ctxs-common-api/atlas-ctxs-common-api.iml" filepath="$PROJECT_DIR$/extensions/ctxs/ctxs-api/ctxs-common-api/atlas-ctxs-common-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/ctxs-data-model/atlas-ctxs-data-model.iml" filepath="$PROJECT_DIR$/extensions/ctxs/ctxs-data-model/atlas-ctxs-data-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/ctxs-adapters/ctxs-netscaler-adapter/atlas-ctxs-netscaler-adapter.iml" filepath="$PROJECT_DIR$/extensions/ctxs/ctxs-adapters/ctxs-netscaler-adapter/atlas-ctxs-netscaler-adapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/atlas-ctxs-parent.iml" filepath="$PROJECT_DIR$/extensions/ctxs/atlas-ctxs-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/ctxs-persistence/atlas-ctxs-persistence.iml" filepath="$PROJECT_DIR$/extensions/ctxs/ctxs-persistence/atlas-ctxs-persistence.iml" />
+      <module fileurl="file://$PROJECT_DIR$/atlas-parent.iml" filepath="$PROJECT_DIR$/atlas-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/rax/api/atlas-rax-api.iml" filepath="$PROJECT_DIR$/extensions/rax/api/atlas-rax-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/rax/data-model/atlas-rax-data-model.iml" filepath="$PROJECT_DIR$/extensions/rax/data-model/atlas-rax-data-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/rax/persistence/atlas-rax-persistence.iml" filepath="$PROJECT_DIR$/extensions/rax/persistence/atlas-rax-persistence.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-adapters/core-adapter-common/core-adapter-common.iml" filepath="$PROJECT_DIR$/core-adapters/core-adapter-common/core-adapter-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-adapters/core-adapters.iml" filepath="$PROJECT_DIR$/core-adapters/core-adapters.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-api/core-api.iml" filepath="$PROJECT_DIR$/core-api/core-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-common/core-common.iml" filepath="$PROJECT_DIR$/core-common/core-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-api/core-common-api/core-common-api.iml" filepath="$PROJECT_DIR$/core-api/core-common-api/core-common-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-data-model/core-data-model.iml" filepath="$PROJECT_DIR$/core-data-model/core-data-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-jobs/core-jobs.iml" filepath="$PROJECT_DIR$/core-jobs/core-jobs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-jobs/core-jobs-common/core-jobs-common.iml" filepath="$PROJECT_DIR$/core-jobs/core-jobs-common/core-jobs-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-jobs/core-jobs-web/core-jobs-web.iml" filepath="$PROJECT_DIR$/core-jobs/core-jobs-web/core-jobs-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-adapters/core-netscaler-adapter/core-netscaler-adapter.iml" filepath="$PROJECT_DIR$/core-adapters/core-netscaler-adapter/core-netscaler-adapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-adapters/core-null-adapter/core-null-adapter.iml" filepath="$PROJECT_DIR$/core-adapters/core-null-adapter/core-null-adapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-persistence/core-persistence.iml" filepath="$PROJECT_DIR$/core-persistence/core-persistence.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-api/core-public-web/core-public-web.iml" filepath="$PROJECT_DIR$/core-api/core-public-web/core-public-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-adapters/core-zxtm-adapter/core-zxtm-adapter.iml" filepath="$PROJECT_DIR$/core-adapters/core-zxtm-adapter/core-zxtm-adapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/ctxs/package/ctxs.iml" filepath="$PROJECT_DIR$/extensions/ctxs/package/ctxs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/extensions.iml" filepath="$PROJECT_DIR$/extensions/extensions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/rax/rax.iml" filepath="$PROJECT_DIR$/extensions/rax/rax.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/rax/rax-jobs/rax-jobs.iml" filepath="$PROJECT_DIR$/extensions/rax/rax-jobs/rax-jobs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/extensions/rax/rax-zxtm-adapter/rax-zxtm-adapter.iml" filepath="$PROJECT_DIR$/extensions/rax/rax-zxtm-adapter/rax-zxtm-adapter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
+    </modules>
+  </component>
+</project>
+

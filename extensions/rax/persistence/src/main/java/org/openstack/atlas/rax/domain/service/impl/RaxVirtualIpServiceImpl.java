@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -215,5 +216,52 @@ public class RaxVirtualIpServiceImpl extends VirtualIpServiceImpl implements Rax
         if (!isIpv6VipAllocatedToAnotherLoadBalancer(lb, virtualIpv6)) {
             virtualIpv6Repository.deleteVirtualIp(virtualIpv6);
         }
+    }
+
+    @Override
+    protected LoadBalancer assignExtraVipsToLoadBalancer(LoadBalancer raxLoadBalancer) throws PersistenceServiceException
+    {
+        LOG.debug("Entering assignExtraVipsToLoadBalancer");
+
+        // If Virtual Ips have already been assigned by core, then we need do nothing
+        if (!raxLoadBalancer.getLoadBalancerJoinVip6Set().isEmpty())   {
+            LOG.debug("No extra VIPs needed since there are some already put in by core");
+            return raxLoadBalancer;
+        }
+
+        LOG.debug("We need to assign extra VIPs. There are currently None");
+
+        if (!raxLoadBalancer.getLoadBalancerJoinVipSet().isEmpty())
+        {
+            assignDefaultIPv6ToLoadBalancer(raxLoadBalancer);
+            return raxLoadBalancer;
+        }
+
+
+
+        assignDefaultIPv6ToLoadBalancer(raxLoadBalancer);
+
+        Set<LoadBalancerJoinVip> newVipConfig = raxLoadBalancer.getLoadBalancerJoinVipSet();
+
+        if (newVipConfig == null)
+            newVipConfig = new HashSet<LoadBalancerJoinVip>();
+
+
+        VirtualIp vip = new VirtualIp();
+        vip.setAddress(null);
+        vip.setVipType(VirtualIpType.PUBLIC);
+
+        VirtualIp newVip = allocateIpv4VirtualIp(vip, raxLoadBalancer.getHost().getCluster());
+
+        LoadBalancerJoinVip newJoinRecord = new LoadBalancerJoinVip();
+        newJoinRecord.setVirtualIp(newVip);
+        newVipConfig.add(newJoinRecord);
+
+
+        raxLoadBalancer.setLoadBalancerJoinVipSet(newVipConfig);
+
+        LOG.debug("We added an IPV4 default VIP");
+
+        return raxLoadBalancer;
     }
 }

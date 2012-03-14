@@ -8,6 +8,8 @@ import org.openstack.atlas.api.validation.result.ValidatorResult;
 import org.openstack.atlas.api.validation.validator.LoadBalancerValidator;
 import org.openstack.atlas.core.api.v1.LoadBalancer;
 import org.openstack.atlas.core.api.v1.LoadBalancers;
+import org.openstack.atlas.service.domain.entity.LoadBalancerJoinVip;
+import org.openstack.atlas.service.domain.entity.VirtualIp;
 import org.openstack.atlas.service.domain.operation.CoreOperation;
 import org.openstack.atlas.service.domain.pojo.MessageDataContainer;
 import org.openstack.atlas.service.domain.repository.LoadBalancerRepository;
