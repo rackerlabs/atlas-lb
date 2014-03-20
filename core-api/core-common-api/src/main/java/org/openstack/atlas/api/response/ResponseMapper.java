@@ -45,6 +45,11 @@ public class ResponseMapper {
                 oov.setMessage((message == null) ? "Out of virtual IPs. Please contact support so they can allocate more virtual IPs." : message);
                 oov.setDetails(details);
                 return oov;
+            case CLUSTER_STATUS:
+                ClusterStatus cse = new ClusterStatus();
+                cse.setMessage((message == null) ? "Cluster status is invalid. Please contact support." : message);
+                cse.setDetails(details);
+                return cse;
             case OVER_LIMIT:
                 OverLimit olf = new OverLimit();
                 olf.setMessage((message == null) ? "Your account is currently over the limit so your request could not be processed." : message);
@@ -61,11 +66,15 @@ public class ResponseMapper {
                 return uf;
             case BAD_REQUEST:
                 BadRequest badRequest = new BadRequest();
-                badRequest.setMessage((message == null) ? "Bad request" : message);
+                badRequest.setMessage((message == null) ? "Bad request." : message);
                 badRequest.setDetails(details);
                 return badRequest;
             case UNKNOWN:
                 lbf.setMessage((message == null) ? CONTACT_SUPPORT : message);
+                lbf.setDetails(details);
+                return lbf;
+            case METHOD_NOT_ALLOWED:
+                lbf.setMessage((message == null) ? "Method is not available." : message);
                 lbf.setDetails(details);
                 return lbf;
             default:
@@ -83,6 +92,8 @@ public class ResponseMapper {
             return getFault(ErrorReason.ENTITY_NOT_FOUND, message, details);
         } else if (e instanceof OutOfVipsException) {
             return getFault(ErrorReason.OUT_OF_VIPS, message, details);
+        }else if (e instanceof ClusterStatusException) {
+            return getFault(ErrorReason.CLUSTER_STATUS, message, details);
         } else if (e instanceof ServiceUnavailableException) {
             return getFault(ErrorReason.SERVICE_UNAVAILABLE, message, details);
         } else if (e instanceof SingletonEntityAlreadyExistsException) {
@@ -107,6 +118,8 @@ public class ResponseMapper {
             return getFault(ErrorReason.BAD_REQUEST, message, details);
         } else if (e instanceof TCPProtocolUnknownPortException) {
             return getFault(ErrorReason.BAD_REQUEST, message, details);
+        } else if (e instanceof MethodNotAllowedException) {
+            return getFault(ErrorReason.METHOD_NOT_ALLOWED, message, details);
         } else {
             LoadBalancerException lbf = (LoadBalancerException) getFault(OperationResponse.ErrorReason.UNKNOWN, null, null);
             lbf.setMessage(CONTACT_SUPPORT);
@@ -125,6 +138,8 @@ public class ResponseMapper {
             status = getStatus(ErrorReason.IMMUTABLE_ENTITY);
         } else if (e instanceof OutOfVipsException) {
             status = getStatus(ErrorReason.OUT_OF_VIPS);
+        } else if (e instanceof ClusterStatusException) {
+            status = getStatus(ErrorReason.CLUSTER_STATUS);
         } else if (e instanceof UnprocessableEntityException) {
             status = getStatus(ErrorReason.UNPROCESSABLE_ENTITY);
         } else if (e instanceof ImmutableEntityException) {
@@ -149,6 +164,8 @@ public class ResponseMapper {
             status = getStatus(ErrorReason.BAD_REQUEST);
         } else if (e instanceof TCPProtocolUnknownPortException) {
             status = getStatus(ErrorReason.BAD_REQUEST);
+        } else if (e instanceof MethodNotAllowedException) {
+            status = getStatus(ErrorReason.METHOD_NOT_ALLOWED);
         } else {
             status = Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
         }
@@ -168,6 +185,9 @@ public class ResponseMapper {
 
         switch (errorReason) {
             case OUT_OF_VIPS:
+                status = 500;
+                break;
+            case CLUSTER_STATUS:
                 status = 500;
                 break;
             case SERVICE_UNAVAILABLE:
@@ -196,6 +216,9 @@ public class ResponseMapper {
                 break;
             case GONE:
                 status = 410;
+                break;
+            case METHOD_NOT_ALLOWED:
+                status = 405;
                 break;
             default:
                 status = 500;

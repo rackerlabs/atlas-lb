@@ -1,46 +1,44 @@
-package org.openstack.atlas.service.domain.entity;
+package org.openstack.atlas.service.domain.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @javax.persistence.Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(
-        name = "vendor",
-        discriminatorType = DiscriminatorType.STRING
-)
-@DiscriminatorValue("CORE")
-@Table(name = "virtual_ipv4")
-public class VirtualIp extends org.openstack.atlas.service.domain.entity.Entity implements Serializable {
+@Table(name = "virtual_ip_ipv4")
+public class VirtualIp extends Entity implements Serializable {
     private final static long serialVersionUID = 532512316L;
 
     @OneToMany(mappedBy = "virtualIp")
     private Set<LoadBalancerJoinVip> loadBalancerJoinVipSet = new HashSet<LoadBalancerJoinVip>();
-
-    @Column(name = "address", length = 39, unique = true, nullable = false)
-    private String address;
-
+    @Column(name = "ip_address", length = 39, unique = true, nullable = false)
+    private String ipAddress;
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private VirtualIpType vipType;
-
     @ManyToOne
     @JoinColumn(name = "cluster_id", nullable = true) // TODO: Should not be nullable. Need to get cluster internally
     private Cluster cluster;
-
     @Column(name = "last_deallocation")
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar lastDeallocation;
-
     @Column(name = "last_allocation")
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar lastAllocation;
-
     @Column(name = "is_allocated", nullable = false)
-    private Boolean isAllocated = false;
+    private Boolean isAllocated;
+    @Transient
+    private Ticket ticket;
+    @Transient
+    private IpVersion ipVersion;
+
+    public IpVersion getIpVersion() {
+        return ipVersion;
+    }
+
+    public void setIpVersion(IpVersion ipVersion) {
+        this.ipVersion = ipVersion;
+    }
 
     public Set<LoadBalancerJoinVip> getLoadBalancerJoinVipSet() {
         if(loadBalancerJoinVipSet == null) loadBalancerJoinVipSet = new HashSet<LoadBalancerJoinVip>();
@@ -51,12 +49,12 @@ public class VirtualIp extends org.openstack.atlas.service.domain.entity.Entity 
         this.loadBalancerJoinVipSet = loadBalancerJoinVipSet;
     }
 
-    public String getAddress() {
-        return address;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     public VirtualIpType getVipType() {
@@ -99,16 +97,28 @@ public class VirtualIp extends org.openstack.atlas.service.domain.entity.Entity 
         isAllocated = allocated;
     }
 
+    //Value or None
+    private static String vorn(Object obj) {
+        return obj == null ? "null" : obj.toString();
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
     @Override
     public String toString() {
-        return "VirtualIp{" +
-                "loadBalancerJoinVipSet=" + loadBalancerJoinVipSet +
-                ", ipAddress='" + address + '\'' +
-                ", vipType=" + vipType +
-                ", cluster=" + cluster +
-                ", lastDeallocation=" + lastDeallocation +
-                ", lastAllocation=" + lastAllocation +
-                ", isAllocated=" + isAllocated +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("{"));
+        sb.append(String.format("id = %s,", vorn(this.getId())));
+        sb.append(String.format("ip_address = %s,", vorn(this.getIpAddress())));
+        sb.append(String.format("vip_type = %s,", vorn(this.getVipType())));
+        sb.append(String.format("last_deallocation = %s", vorn(this.getLastDeallocation())));
+        sb.append(String.format("}"));
+        return sb.toString();
     }
 }

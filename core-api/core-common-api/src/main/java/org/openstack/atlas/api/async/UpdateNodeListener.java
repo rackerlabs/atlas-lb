@@ -2,47 +2,33 @@ package org.openstack.atlas.api.async;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openstack.atlas.api.helper.NodesHelper;
-import org.openstack.atlas.datamodel.CoreLoadBalancerStatus;
-import org.openstack.atlas.service.domain.entity.LoadBalancer;
-import org.openstack.atlas.service.domain.entity.Node;
-import org.openstack.atlas.service.domain.exception.EntityNotFoundException;
-import org.openstack.atlas.service.domain.pojo.MessageDataContainer;
-import org.openstack.atlas.service.domain.repository.LoadBalancerRepository;
-import org.openstack.atlas.service.domain.service.LoadBalancerService;
-import org.openstack.atlas.service.domain.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import static org.openstack.atlas.datamodel.CoreLoadBalancerStatus.ACTIVE;
-import static org.openstack.atlas.datamodel.CoreLoadBalancerStatus.ERROR;
-import static org.openstack.atlas.datamodel.CoreNodeStatus.OFFLINE;
-import static org.openstack.atlas.service.domain.service.helpers.AlertType.*;
-import static org.openstack.atlas.service.domain.event.entity.EventType.*;
-import static org.openstack.atlas.service.domain.event.entity.CategoryType.*;
-import static org.openstack.atlas.service.domain.event.entity.EventSeverity.*;
+import org.openstack.atlas.adapter.helpers.ZxtmNameBuilder;
+import org.openstack.atlas.service.domain.entities.LoadBalancer;
+import org.openstack.atlas.service.domain.entities.LoadBalancerStatus;
+import org.openstack.atlas.service.domain.entities.Node;
+import org.openstack.atlas.service.domain.exceptions.EntityNotFoundException;
 
 import javax.jms.Message;
 
-@Component
-public class UpdateNodeListener extends BaseListener {
-    private final Log LOG = LogFactory.getLog(UpdateNodeListener.class);
+import static org.openstack.atlas.service.domain.events.entities.CategoryType.UPDATE;
+import static org.openstack.atlas.service.domain.events.entities.EventSeverity.CRITICAL;
+import static org.openstack.atlas.service.domain.events.entities.EventSeverity.INFO;
+import static org.openstack.atlas.service.domain.events.entities.EventType.UPDATE_NODE;
+import static org.openstack.atlas.service.domain.services.helpers.AlertType.DATABASE_FAILURE;
+import static org.openstack.atlas.service.domain.services.helpers.AlertType.ZEUS_FAILURE;
 
-    @Autowired
-    private NotificationService notificationService;
-    @Autowired
-    private LoadBalancerRepository loadBalancerRepository;
+public class UpdateNodeListener extends BaseListener {
+
+    private final Log LOG = LogFactory.getLog(UpdateNodeListener.class);
 
     public void doOnMessage(final Message message) throws Exception {
         LOG.debug("Entering " + getClass());
         LOG.debug(message);
+        LoadBalancer queueLb = getLoadbalancerFromMessage(message);
         LoadBalancer dbLoadBalancer;
 
-        MessageDataContainer dataContainer = getDataContainerFromMessage(message);
-        LoadBalancer queueLb = dataContainer.getLoadBalancer();
-
         try {
-            dbLoadBalancer = loadBalancerRepository.getByIdAndAccountId(queueLb.getId(), queueLb.getAccountId());
+            dbLoadBalancer = loadBalancerService.get(queueLb.getId(), queueLb.getAccountId());
         } catch (EntityNotFoundException enfe) {
             String alertDescription = String.format("Load balancer '%d' not found in database.", queueLb.getId());
             LOG.error(alertDescription, enfe);
@@ -54,23 +40,23 @@ public class UpdateNodeListener extends BaseListener {
         Node nodeToUpdate = getNodeToUpdate(queueLb);
 
         try {
-            LOG.info(String.format("Updating nodes for load balancer '%d' in LB Device...", dbLoadBalancer.getId()));
-            reverseProxyLoadBalancerService.updateNode(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), nodeToUpdate);
-            LOG.info(String.format("Successfully updated nodes for load balancer '%d' in LB Device.", dbLoadBalancer.getId()));
+            LOG.info(String.format("Updating nodes for load balancer '%d' in Zeus...", dbLoadBalancer.getId()));
+            String poolName = ZxtmNameBuilder.genVSName(dbLoadBalancer);
+            reverseProxyLoadBalancerService.setNodes(dbLoadBalancer);
+            reverseProxyLoadBalancerService.setNodesPriorities(poolName, dbLoadBalancer);
+            LOG.info(String.format("Successfully updated nodes for load balancer '%d' in Zeus.", dbLoadBalancer.getId()));
         } catch (Exception e) {
-            dbLoadBalancer.setStatus(ERROR);
-            NodesHelper.setNodesToStatus(dbLoadBalancer, OFFLINE);
-            loadBalancerRepository.update(dbLoadBalancer);
-            String alertDescription = String.format("Error updating node '%d' in LB Device for loadbalancer '%d'.", nodeToUpdate.getId(), dbLoadBalancer.getId());
+            loadBalancerService.setStatus(dbLoadBalancer, LoadBalancerStatus.ERROR);
+            String alertDescription = String.format("Error updating node '%d' in Zeus for loadbalancer '%d'.", nodeToUpdate.getId(), dbLoadBalancer.getId());
             LOG.error(alertDescription, e);
-            notificationService.saveAlert(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), e, LBDEVICE_FAILURE.name(), alertDescription);
+            notificationService.saveAlert(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), e, ZEUS_FAILURE.name(), alertDescription);
             sendErrorToEventResource(queueLb, nodeToUpdate);
+
             return;
         }
 
         // Update load balancer status in DB
-        dbLoadBalancer.setStatus(ACTIVE);
-        loadBalancerRepository.update(dbLoadBalancer);
+        loadBalancerService.setStatus(dbLoadBalancer, LoadBalancerStatus.ACTIVE);
 
         // Add atom entry
         String atomTitle = "Node Successfully Updated";
@@ -91,13 +77,13 @@ public class UpdateNodeListener extends BaseListener {
         return nodeToUpdate;
     }
 
-    private StringBuffer createAtomSummary(Node node) {
-        StringBuffer atomSummary = new StringBuffer();
+    private StringBuilder createAtomSummary(Node node) {
+        StringBuilder atomSummary = new StringBuilder();
         atomSummary.append("Node successfully updated with ");
-        atomSummary.append("address: '").append(node.getAddress()).append("', ");
+        atomSummary.append("address: '").append(node.getIpAddress()).append("', ");
         atomSummary.append("port: '").append(node.getPort()).append("', ");
         atomSummary.append("weight: '").append(node.getWeight()).append("', ");
-        atomSummary.append("condition: '").append(node.isEnabled()).append("'");
+        atomSummary.append("condition: '").append(node.getCondition()).append("'");
         return atomSummary;
     }
 

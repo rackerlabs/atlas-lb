@@ -1,10 +1,15 @@
-package org.openstack.atlas.common.config.osgi.cfg.commons;
+package org.openstack.atlas.osgi.cfg.commons;
 
-import org.openstack.atlas.common.config.*;
+import org.openstack.atlas.cfg.ConfigurationAccessException;
+import org.openstack.atlas.cfg.ConfigurationInitializationException;
+import org.openstack.atlas.cfg.ConfigurationKey;
+import org.openstack.atlas.cfg.ConfigurationNotFoundException;
+import org.openstack.atlas.cfg.Configuration;
+import java.io.File;
+import java.util.Iterator;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-
-import java.io.File;
 
 public class ApacheCommonsConfiguration implements Configuration {
 
@@ -71,5 +76,17 @@ public class ApacheCommonsConfiguration implements Configuration {
         }
 
         return okay;
+    }
+
+    @Override
+    public Iterator getKeys() {
+        checkState();
+        return configuration.getKeys();
+    }
+
+    @Override
+    public String getString(String key) throws ConfigurationInitializationException {
+        checkState();
+        return configuration.getString(key);
     }
 }

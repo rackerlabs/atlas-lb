@@ -1,14 +1,14 @@
-package org.openstack.atlas.service.domain.event.repository;
+package org.openstack.atlas.service.domain.events.repository;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openstack.atlas.service.domain.entity.LoadBalancer;
-import org.openstack.atlas.service.domain.event.entity.*;
-import org.openstack.atlas.service.domain.event.pojo.AccountLoadBalancerServiceEvents;
-import org.openstack.atlas.service.domain.event.pojo.LoadBalancerServiceEvents;
-import org.openstack.atlas.service.domain.exception.EntityNotFoundException;
-import org.openstack.atlas.service.domain.pojo.DateTimeToolException;
-import org.openstack.atlas.service.domain.pojo.DateTimeTools;
+import org.openstack.atlas.service.domain.entities.LoadBalancer;
+import org.openstack.atlas.service.domain.events.entities.*;
+import org.openstack.atlas.service.domain.events.pojos.AccountLoadBalancerServiceEvents;
+import org.openstack.atlas.service.domain.events.pojos.LoadBalancerServiceEvents;
+import org.openstack.atlas.service.domain.exceptions.EntityNotFoundException;
+import org.openstack.atlas.service.domain.pojos.*;
+import org.openstack.atlas.service.domain.util.Constants;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +16,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.*;
+
+import static org.openstack.atlas.service.domain.services.impl.VirtualIpServiceImpl.DEL_PTR_FAILED;
+import static org.openstack.atlas.service.domain.services.impl.VirtualIpServiceImpl.DEL_PTR_PASSED;
 
 @Repository
 @Transactional
@@ -25,6 +28,7 @@ public class LoadBalancerEventRepository {
     @PersistenceContext(unitName = "loadbalancing")
     private EntityManager entityManager;
     private final Integer PAGE_SIZE = 10;
+    private final int MAX_SERVICE_EVENT = 20;
 
     public LoadBalancerEventRepository() {
     }
@@ -57,12 +61,55 @@ public class LoadBalancerEventRepository {
         entityManager.persist(nodeEvent);
     }
 
+    public void save(NodeServiceEvent nodeServiceEvent) {
+        entityManager.persist(nodeServiceEvent);
+    }
+
     public void save(VirtualIpEvent virtualIpEvent) {
         entityManager.persist(virtualIpEvent);
     }
 
     public void save(SessionPersistenceEvent sessionPersistenceEvent) {
         entityManager.persist(sessionPersistenceEvent);
+    }
+
+    public LoadBalancerServiceEvents getAllPTREventsByLoadBalancer(Integer loadbalancerId) {
+        String qStr = "SELECT e FROM LoadBalancerServiceEvent e "
+                + "where e.loadbalancerId = :loadbalancerId and e.type = :type";
+        Query q = entityManager.createQuery(qStr).setParameter("loadbalancerId", loadbalancerId).setParameter("type", EventType.DELETE_VIRTUAL_IP);
+        List<LoadBalancerServiceEvent> events = q.getResultList();
+        LoadBalancerServiceEvents lbsEvents = new LoadBalancerServiceEvents();
+        for (LoadBalancerServiceEvent event : events) {
+            String title = event.getTitle();
+            if (title == null) {
+                continue;
+            }
+            if (title.equals(DEL_PTR_FAILED) || title.equals(DEL_PTR_PASSED)) {
+                lbsEvents.getLoadBalancerServiceEvents().add(event);
+            }
+        }
+        lbsEvents.setLoadbalancerId(loadbalancerId);
+        return lbsEvents;
+    }
+
+     public LoadBalancerServiceEvents getAllAtomHopperEventsByLoadBalancer(Integer loadbalancerId) {
+        String qStr = "SELECT e FROM LoadBalancerServiceEvent e "
+                + "where e.loadbalancerId = :loadbalancerId and e.type = :type";
+        Query q = entityManager.createQuery(qStr).setParameter("loadbalancerId", loadbalancerId).setParameter("type", EventType.AH_USAGE_EXECUTION);
+        List<LoadBalancerServiceEvent> events = q.getResultList();
+        LoadBalancerServiceEvents lbsEvents = new LoadBalancerServiceEvents();
+        for (LoadBalancerServiceEvent event : events) {
+            String title = event.getTitle();
+            if (title == null) {
+                continue;
+            }
+            if (title.equals(Constants.AH_USAGE_EVENT_FAILURE)) {
+//                lbsEvents.getLoadBalancerServiceEvents().add(event);
+            }
+            lbsEvents.getLoadBalancerServiceEvents().add(event);
+        }
+        lbsEvents.setLoadbalancerId(loadbalancerId);
+        return lbsEvents;
     }
 
     public List<LoadBalancerServiceEvent> getAllEventsForAccount(Integer accountId, Integer page) {
@@ -73,6 +120,15 @@ public class LoadBalancerEventRepository {
         }
 
         return query.getResultList();
+    }
+
+    public LoadBalancerServiceEvents getAllEventsForUsername(String username, Integer page, Calendar startDate, Calendar endDate) {
+        Query query = entityManager.createQuery("SELECT lbe FROM LoadBalancerEvent lbe WHERE lbe.author = :author AND lbe.created BETWEEN :startDate AND :endDate ORDER BY lbe.created ASC").setParameter("author", username).setParameter("startDate", startDate).setParameter("endDate", endDate);
+
+        List<LoadBalancerServiceEvent> lsv = query.getResultList();
+        LoadBalancerServiceEvents events = new LoadBalancerServiceEvents();
+        events.getLoadBalancerServiceEvents().addAll(lsv);
+        return events;
     }
 
     public List<NodeEvent> getAllNodeEvents(Integer accountId, Integer loadbalancerId, Integer page) {
@@ -102,6 +158,53 @@ public class LoadBalancerEventRepository {
             query = query.setFirstResult((page - 1) * PAGE_SIZE);
         }
 
+        return query.getResultList();
+    }
+
+    public List<NodeServiceEvent> getNodeServiceEvents(Integer accountId, Integer loadbalancerId, Integer page, Integer... p) {
+        Integer offset = 0;
+        Integer limit = 100;
+        Integer marker = 0;
+
+        CustomQuery cq;
+        String selectClause = "SELECT evt FROM NodeServiceEvent evt";
+        cq = new CustomQuery(selectClause);
+
+        cq.addParam("evt.accountId", "=", "accountId", accountId);
+        cq.addParam("evt.loadbalancerId", "=", "loadbalancerId", loadbalancerId);
+
+        if (p.length >= 2) {
+            offset = p[0];
+            limit = p[1];
+            marker = p[2];
+            int i = 0;
+            if (offset == null) {
+                offset = 0;
+            }
+            if (limit == null || limit > 100) {
+                limit = 100;
+            }
+            if (marker == null) {
+                marker = 0;
+            }
+            cq.addParam("evt.nodeId", ">=", "nodeId", marker);
+        }
+
+        String qStr = cq.getQueryString();
+
+        Query query = entityManager.createQuery(qStr);
+
+        for (QueryParameter param : cq.getQueryParameters()) {
+            query.setParameter(param.getPname(), param.getValue());
+        }
+
+        //ATOM
+        if (page != null && page > 0) {
+            query.setFirstResult((page - 1) * PAGE_SIZE);
+        } else {
+            query.setFirstResult(offset);
+        }
+        query.setMaxResults(limit);
         return query.getResultList();
     }
 
@@ -159,7 +262,7 @@ public class LoadBalancerEventRepository {
         Query q;
         String qStr;
         String qHead;
-        StringBuffer qMid = new StringBuffer();
+        StringBuilder qMid = new StringBuilder();
         String qTail;
         Calendar startCal;
         Calendar endCal;
@@ -180,27 +283,27 @@ public class LoadBalancerEventRepository {
 
         qMid.append(" and created >= :startDate ");
 
-        if(startDate != null) {
+        if (startDate != null) {
             startCal = DateTimeTools.parseDate(startDate);
-            DateTimeTools.setCalendarAttrs(startCal,null,null,null,0,0,0); // Early morning
-        }else{
+            DateTimeTools.setCalendarAttrs(startCal, null, null, null, 0, 0, 0); // Early morning
+        } else {
             startCal = Calendar.getInstance();
-            startCal.add(Calendar.DAY_OF_MONTH,-60);
-            DateTimeTools.setCalendarAttrs(startCal,null,null,null,0,0,0); // Early morning
+            startCal.add(Calendar.DAY_OF_MONTH, -60);
+            DateTimeTools.setCalendarAttrs(startCal, null, null, null, 0, 0, 0); // Early morning
         }
 
-        if(endDate != null) {
+        if (endDate != null) {
             endCal = DateTimeTools.parseDate(endDate);
-            DateTimeTools.setCalendarAttrs(endCal,null,null,null,23,59,59); // Midnight;
+            DateTimeTools.setCalendarAttrs(endCal, null, null, null, 23, 59, 59); // Midnight;
             qMid.append(" and created <= :endDate ");
         }
 
         qStr = String.format("%s%s%s", qHead, qMid.toString(), qTail);
-        q = entityManager.createQuery(qStr).setParameter("accountId",accountId);
+        q = entityManager.createQuery(qStr).setParameter("accountId", accountId);
 
-        q.setParameter("startDate",startCal);
-        if(endDate != null) {
-            q.setParameter("endDate",endCal);
+        q.setParameter("startDate", startCal);
+        if (endDate != null) {
+            q.setParameter("endDate", endCal);
         }
 
         resultList = q.getResultList();
@@ -232,7 +335,7 @@ public class LoadBalancerEventRepository {
         Query q;
         String qStr;
         String qHead;
-        StringBuffer qMid = new StringBuffer();
+        StringBuilder qMid = new StringBuilder();
         String qTail;
         Calendar startCal;
         Calendar endCal;
@@ -245,61 +348,44 @@ public class LoadBalancerEventRepository {
         lbid2EventList = new HashMap<Integer, List<LoadBalancerServiceEvent>>();
         endCal = null;
 
-        qHead = "select l from LoadBalancerServiceEvent l "
-                + "where  l.accountId = :accountId";
-
-
+        qHead = "select l from LoadBalancerServiceEvent l " + "where  l.accountId = :accountId and loadbalancer_id = :lbId";
         qTail = " order by created";
-
         qMid.append(" and created >= :startDate ");
 
-        if(startDate != null) {
+        if (startDate != null) {
             startCal = DateTimeTools.parseDate(startDate);
-            DateTimeTools.setCalendarAttrs(startCal,null,null,null,0,0,0); // Early morning
-        }else{
+            DateTimeTools.setCalendarAttrs(startCal, null, null, null, 0, 0, 0); // Early morning
+        } else {
             startCal = Calendar.getInstance();
-            startCal.add(Calendar.DAY_OF_MONTH,-1);
-            DateTimeTools.setCalendarAttrs(startCal,null,null,null,0,0,0); // Early morning
+            startCal.add(Calendar.DAY_OF_MONTH, -1);
+            DateTimeTools.setCalendarAttrs(startCal, null, null, null, 0, 0, 0); // Early morning
         }
 
-        if(endDate != null) {
+        if (endDate != null) {
             endCal = DateTimeTools.parseDate(endDate);
-            DateTimeTools.setCalendarAttrs(endCal,null,null,null,23,59,59); // Midnight;
+            DateTimeTools.setCalendarAttrs(endCal, null, null, null, 23, 59, 59); // Midnight;
             qMid.append(" and created <= :endDate ");
         }
 
         qStr = String.format("%s%s%s", qHead, qMid.toString(), qTail);
-        q = entityManager.createQuery(qStr).setParameter("accountId",lb.getAccountId());
-
-        q.setParameter("startDate",startCal);
-        if(endDate != null) {
-            q.setParameter("endDate",endCal);
+        q = entityManager.createQuery(qStr).setParameter("accountId", lb.getAccountId()).setParameter("lbId", lb.getId()).setMaxResults(MAX_SERVICE_EVENT).setParameter("startDate", startCal);
+        if (endDate != null) {
+            q.setParameter("endDate", endCal);
         }
 
         resultList = q.getResultList();
-        Integer lbId = null;
-        for (LoadBalancerServiceEvent resultEvent : resultList) {
-            if (resultEvent.getLoadbalancerId().equals(lb.getId())) {
-                lbId = resultEvent.getLoadbalancerId();
-                if (!lbid2EventList.containsKey(lbId)) {
-                    lbid2EventList.put(lbId, new ArrayList<LoadBalancerServiceEvent>());
-                    lbIds.add(lbId);
-                }
-                LoadBalancerServiceEvent eventOut = new LoadBalancerServiceEvent();
-                eventOut.setCategory(resultEvent.getCategory());
-                eventOut.setSeverity(resultEvent.getSeverity());
-                eventOut.setDescription(resultEvent.getDescription());
-                eventOut.setAuthor(resultEvent.getAuthor());
-                eventOut.setCreated(resultEvent.getCreated());
-                lbid2EventList.get(lbId).add(eventOut);
-            }
-        }
         lbEvents = new LoadBalancerServiceEvents();
-        if (lbid2EventList.containsKey(lbId)) {
-            lbEvents.setLoadbalancerId(lbId);
-            lbEvents.getLoadBalancerServiceEvents().addAll(lbid2EventList.get(lbId));
-            out.getLoadBalancerServiceEvents().add(lbEvents);
+        LoadBalancerServiceEvent loadBalancerServiceEvent;
+        for (LoadBalancerServiceEvent lbse : resultList) {
+            loadBalancerServiceEvent = new LoadBalancerServiceEvent();
+            loadBalancerServiceEvent.setCategory(lbse.getCategory());
+            loadBalancerServiceEvent.setSeverity(lbse.getSeverity());
+            loadBalancerServiceEvent.setDescription(lbse.getDescription());
+            loadBalancerServiceEvent.setAuthor(lbse.getAuthor());
+            loadBalancerServiceEvent.setCreated(lbse.getCreated());
+            lbEvents.getLoadBalancerServiceEvents().add(loadBalancerServiceEvent);
         }
+        out.getLoadBalancerServiceEvents().add(lbEvents);
 
         return out;
     }
@@ -314,6 +400,13 @@ public class LoadBalancerEventRepository {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -90);
         entityManager.createQuery("DELETE FROM NodeEvent a where a.created <= :days").setParameter("days", cal).executeUpdate();
+    }
+
+    public void removeNodeServiceEventEntries() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -90);
+        entityManager.createQuery("DELETE FROM NodeServiceEvent a WHERE a.created <= :days")
+                .setParameter("days", cal).executeUpdate();
     }
 
     public void removeVirtualIpEventEntries() {
@@ -350,5 +443,25 @@ public class LoadBalancerEventRepository {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -90);
         entityManager.createQuery("DELETE FROM LoadBalancerEvent a where a.created <= :days").setParameter("days", cal).executeUpdate();
+    }
+
+    public Set<LbIdAccountId> getLoadBalancersActiveDuringPeriod(Calendar startTime, Calendar endTime) {
+        Set<LbIdAccountId> lbIds = new HashSet<LbIdAccountId>();
+
+//        Query query = entityManager.createQuery("SELECT l.loadbalancerId, l.accountId FROM LoadBalancerEvent l where (l.status != 'DELETED' or l.updated >= :startTime) and l.created < :endTime and l.status not in ('BUILD', 'PENDING_DELETE')")
+        Query query = entityManager.createQuery("SELECT l.loadbalancerId, l.accountId FROM LoadBalancerEvent l where (l.type != 'DELETED' or l.updated >= :startTime) and l.created < :endTime and l.status not in ('BUILD', 'PENDING_DELETE')")
+                .setParameter("startTime", startTime)
+                .setParameter("endTime", endTime);
+
+        final List<Object[]> resultList = query.getResultList();
+
+        for (Object[] row : resultList) {
+            Integer loadBalancerId = (Integer) row[0];
+            Integer accountId = (Integer) row[1];
+            LbIdAccountId lbIdAccountId = new LbIdAccountId(loadBalancerId, accountId);
+            lbIds.add(lbIdAccountId);
+        }
+
+        return lbIds;
     }
 }

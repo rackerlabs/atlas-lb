@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.openstack.atlas</groupId>
         <artifactId>atlas-parent</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.19.33-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core-data-model</artifactId>
-    <name>Openstack :: Atlas :: Core :: Data Model</name>
+    <artifactId>atlas-data-model</artifactId>
+    <name>Openstack :: Atlas :: Data Model</name>
+
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>core-common</artifactId>
+            <artifactId>atlas-util</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
         </dependency>
     </dependencies>
 
@@ -30,6 +26,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <optimize>false</optimize>
+                        <debug>true</debug>
+                    </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -49,37 +51,76 @@
                     </dependency>
                 </dependencies>
                 <executions>
-                     <execution>
-                        <id>generate-core-api-sources</id>
+                    <execution>
+                        <id>generate-atom-sources</id>
                         <configuration>
-                            <staleFile>target/coreApi.staleFile</staleFile>
+                            <staleFile>target/atom.staleFile</staleFile>
                             <extension>true</extension>
                             <schemaDirectory>
                                 ${basedir}/src/main/resources/META-INF/xsd
                             </schemaDirectory>
                             <clearOutputDir>false</clearOutputDir>
-                            <schemaFiles>CoreApi.xsd</schemaFiles>
-                            <packageName>org.openstack.atlas.core.api.v1</packageName>
+                            <schemaFiles>atom.xsd</schemaFiles>
+                            <packageName>org.w3.atom</packageName>
+                            <!--<arguments>-Xcollection-setter-injector</arguments>-->
                             <arguments>-Xxew -setters</arguments>
-                            <bindingDirectory>src/main/resources/META-INF/xsd</bindingDirectory>
-                            <bindingFiles>IpVersionBinding.xjb</bindingFiles>
                         </configuration>
                         <goals>
                             <goal>xjc</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>generate-core-exception-sources</id>
+                        <id>generate-load-balancer-api-sources</id>
                         <configuration>
-                            <staleFile>target/coreException.staleFile</staleFile>
+                            <staleFile>target/lb.staleFile</staleFile>
                             <extension>true</extension>
                             <schemaDirectory>
                                 ${basedir}/src/main/resources/META-INF/xsd
                             </schemaDirectory>
                             <clearOutputDir>false</clearOutputDir>
-                            <schemaFiles>CoreExceptions.xsd</schemaFiles>
-                            <packageName>org.openstack.atlas.core.api.v1.exceptions</packageName>
+                            <schemaFiles>LoadBalancerApi.xsd</schemaFiles>
+                            <packageName>org.openstack.atlas.docs.loadbalancers.api.v1</packageName>
+                            <!--<arguments>-Xcollection-setter-injector</arguments>-->
+                            <arguments>-Xxew -setters</arguments>
+                            <bindingDirectory>${basedir}/src/main/resources/META-INF/xsd</bindingDirectory>
+                            <bindingFiles>atomBindings.xjb</bindingFiles>
+                        </configuration>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-load-balancer-api-faults-sources</id>
+                        <configuration>
+                            <staleFile>target/lbf.staleFile</staleFile>
+                            <extension>true</extension>
+                            <schemaDirectory>
+                                ${basedir}/src/main/resources/META-INF/xsd
+                            </schemaDirectory>
+                            <clearOutputDir>false</clearOutputDir>
+                            <schemaFiles>LoadBalancerApiFaults.xsd</schemaFiles>
+                            <packageName>org.openstack.atlas.docs.loadbalancers.api.v1.faults</packageName>
                             <arguments>-Xcollection-setter-injector</arguments>
+                        </configuration>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-load-balancer-management-api-sources</id>
+                        <configuration>
+                            <staleFile>target/lbm.staleFile</staleFile>
+                            <extension>true</extension>
+                            <schemaDirectory>
+                                ${basedir}/src/main/resources/META-INF/xsd
+                            </schemaDirectory>
+                            <clearOutputDir>false</clearOutputDir>
+                            <schemaFiles>LbManagementApi.xsd</schemaFiles>
+                            <packageName>org.openstack.atlas.docs.loadbalancers.api.management.v1</packageName>
+                            <!--<arguments>-Xcollection-setter-injector</arguments>-->
+                            <arguments>-Xxew -setters</arguments>
+                            <bindingDirectory>${basedir}/src/main/resources/META-INF/xsd</bindingDirectory>
+                            <bindingFiles>atomBindings.xjb,bindings.xjb</bindingFiles>
                         </configuration>
                         <goals>
                             <goal>xjc</goal>

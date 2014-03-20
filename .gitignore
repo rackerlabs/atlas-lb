@@ -1,19 +1,20 @@
 ## java specific
 !.gitignore
+.idea
 *.iml
 *.iws
 *.ipr
-*.ids
 .maven
 .settings
 .project
 .classpath
-target/
 */target
 classes/
+target/
 */target/*
 */*/target
 */*/*/target/*
+atlas-parent.ids
 
 ## generic files to ignore
 *~
@@ -23,5 +24,3 @@ classes/
 *.out
 *.log
 *.log.*
-tags
-

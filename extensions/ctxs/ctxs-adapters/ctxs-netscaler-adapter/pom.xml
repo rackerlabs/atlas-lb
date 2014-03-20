@@ -1,44 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.openstack.atlas</groupId>
-        <artifactId>atlas-ctxs-adapters</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <artifactId>atlas-adapter</artifactId>
+        <version>1.19.33-SNAPSHOT</version>
     </parent>
 
-    <artifactId>atlas-ctxs-netscaler-adapter</artifactId>
-    <name>Openstack :: Atlas :: Extension :: CTXS :: Adapters :: NetScaler </name>
+    <artifactId>atlas-zxtm-service</artifactId>
+    <name>Openstack :: Atlas :: Adapter :: ZXTM Service</name>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>atlas-ctxs-adapter-common</artifactId>
+            <artifactId>atlas-zxtm-stubs</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>core-netscaler-adapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>                
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>core-adapter-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>        
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>atlas-ctxs-persistence</artifactId>
+            <artifactId>atlas-persistence</artifactId>
             <version>${project.version}</version>
         </dependency>
-	<dependency>
-    	    <groupId>com.sun.jersey</groupId>
-    	    <artifactId>jersey-client</artifactId>
-    	    <version>1.8</version>
-	</dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
@@ -56,12 +40,31 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
+        <defaultGoal>install</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <inherited>true</inherited>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <debug>true</debug>
+                        <optimize>false</optimize>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <configuration>
+                        <descriptorRefs>
+                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                        </descriptorRefs>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
 
 </project>

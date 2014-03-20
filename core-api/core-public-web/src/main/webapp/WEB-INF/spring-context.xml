@@ -4,12 +4,11 @@
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-       http://cxf.apache.org/jaxrs
-       http://cxf.apache.org/schemas/jaxrs.xsd">
+       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
-    <!--<import resource="classpath:api-context.xml" />-->
+    <import resource="classpath:spring-context-public.xml"/>
 
-    <jaxrs:server id="loadBalancingPublic" address="/" staticSubresourceResolution="false">
+    <jaxrs:server id="loadBalancingPublic" address="/" staticSubresourceResolution="true">
         <jaxrs:serviceFactories>
             <ref bean="loadBalancingPublicImplFactory"/>
         </jaxrs:serviceFactories>
@@ -19,8 +18,9 @@
             <entry key="atom" value="application/atom+xml"/>
         </jaxrs:extensionMappings>
         <jaxrs:providers>
+            <ref bean="jaxbProvider"/>
             <ref bean="jsonProvider"/>
-            <!--<ref bean="atomProvider"/>-->
+            <ref bean="atomProvider"/>
         </jaxrs:providers>
     </jaxrs:server>
 

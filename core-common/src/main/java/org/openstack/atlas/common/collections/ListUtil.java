@@ -27,4 +27,19 @@ public class ListUtil {
        }
        return returnList;
     }
+
+    /**
+     * Made by Suda's suggestion
+     */
+    public static <T> String generateCommaSeparatedString(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+
+        String outList = "";
+        for (T t : list) {
+            outList += t + ", ";
+        }
+        return outList.substring(0, outList.length() - 2);
+    }
 }

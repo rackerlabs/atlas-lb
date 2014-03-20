@@ -1,10 +1,10 @@
 package org.openstack.atlas.api.atom;
 
+import org.openstack.atlas.cfg.Configuration;
+import org.openstack.atlas.cfg.PublicApiServiceConfigurationKeys;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
-import org.openstack.atlas.api.config.PublicApiServiceConfigurationKeys;
-import org.openstack.atlas.common.config.Configuration;
 
 import java.util.List;
 import java.util.Map;
@@ -103,6 +103,16 @@ public class AtomFeedAdapter implements FeedSourceAdapter {
                     nextLink.setHref(entryBuilder.buildCompleteUri(String.format("/%d/loadbalancers/%d/nodes.atom", accountId, loadBalancerId), baseUri));
                 }
                 break;
+            case NODE_SERVICE_FEED:
+                feed.setTitle("Node Service Feed");
+                feed.setId(String.format("%d-loadbalancers-%d-nodeservice", accountId, loadBalancerId));
+                if (prevLink != null) {
+                    prevLink.setHref(entryBuilder.buildCompleteUri(String.format("/%d/loadbalancers/%d/nodes/events.atom", accountId, loadBalancerId), baseUri));
+                }
+                if (nextLink != null) {
+                    nextLink.setHref(entryBuilder.buildCompleteUri(String.format("/%d/loadbalancers/%d/nodes/events.atom", accountId, loadBalancerId), baseUri));
+                }
+                break;
             case NODE_FEED:
                 Integer nodeId = (Integer) attributes.get("nodeId");
                 feed.setTitle("Node Feed");
@@ -177,7 +187,7 @@ public class AtomFeedAdapter implements FeedSourceAdapter {
                 nextLink.setHref(nextLink.getHref() + "?page=" + (page + 1));
         }
 
-        feed.addAuthor("OpenStack Cloud");
+        feed.addAuthor("Rackspace Cloud");
 
         return feed;
     }

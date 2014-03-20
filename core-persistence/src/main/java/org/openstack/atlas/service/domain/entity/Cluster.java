@@ -1,4 +1,6 @@
-package org.openstack.atlas.service.domain.entity;
+package org.openstack.atlas.service.domain.entities;
+
+import org.openstack.atlas.docs.loadbalancers.api.management.v1.ClusterStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -6,14 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @javax.persistence.Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(
-        name = "vendor",
-        discriminatorType = DiscriminatorType.STRING
-)
-@DiscriminatorValue("CORE")
 @Table(name = "cluster")
-public class Cluster extends org.openstack.atlas.service.domain.entity.Entity implements Serializable {
+public class Cluster extends Entity implements Serializable {
     private final static long serialVersionUID = 532512316L;
 
     @Column(name = "name", unique = true, nullable = false)
@@ -28,14 +24,22 @@ public class Cluster extends org.openstack.atlas.service.domain.entity.Entity im
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cluster")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "cluster_status", length=32, nullable = false)
+    private ClusterStatus clusterStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "data_center", length=32, nullable = false)
+    private DataCenter dataCenter;
+
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="cluster")
     private Set<VirtualIp> virtualIps = new HashSet<VirtualIp>();
 
-    @Column(name = "cluster_ipv6_cidr", length = 43, nullable = true)
+    @Column(name = "cluster_ipv6_cidr",length=43,nullable=true)
     private String clusterIpv6Cidr;
 
     public Set<VirtualIp> getVirtualIps() {
-        if (virtualIps == null) {
+        if(virtualIps == null) {
             virtualIps = new HashSet<VirtualIp>();
         }
         return virtualIps;
@@ -77,6 +81,22 @@ public class Cluster extends org.openstack.atlas.service.domain.entity.Entity im
         this.password = password;
     }
 
+    public DataCenter getDataCenter() {
+        return dataCenter;
+    }
+
+    public void setDataCenter(DataCenter dataCenter) {
+        this.dataCenter = dataCenter;
+    }
+
+    public ClusterStatus getStatus() {
+        return clusterStatus;
+    }
+
+    public void setStatus(ClusterStatus clusterStatus) {
+        this.clusterStatus = clusterStatus;
+    }
+
     public String getClusterIpv6Cidr() {
         return clusterIpv6Cidr;
     }
@@ -85,15 +105,5 @@ public class Cluster extends org.openstack.atlas.service.domain.entity.Entity im
         this.clusterIpv6Cidr = clusterIpv6Cidr;
     }
 
-    @Override
-    public String toString() {
-        return "Cluster{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", virtualIps=" + virtualIps +
-                ", clusterIpv6Cidr='" + clusterIpv6Cidr + '\'' +
-                '}';
-    }
+
 }

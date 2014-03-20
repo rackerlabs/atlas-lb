@@ -25,6 +25,21 @@ public class AtomHelper {
         return lse;
     }
 
+    public static LoadBalancerServiceEvent createloadBalancerSslTerminationEvent(String userName, Integer accountId, Integer loadbalancerId, String title, String desc, EventType eventType, CategoryType category, EventSeverity severity, Integer additionalId) {
+        LoadBalancerServiceEvent lse = new LoadBalancerServiceEvent();
+        lse.setAccountId(accountId);
+        lse.setLoadbalancerId(loadbalancerId);
+        lse.setAuthor(userName);
+        lse.setCreated(Calendar.getInstance());
+        lse.setTitle(title);
+        lse.setDescription(desc);
+        lse.setCategory(category);
+        lse.setSeverity(severity);
+        lse.setType(eventType);
+        lse.setRelativeUri(createRelativeUri(accountId, loadbalancerId, eventType, additionalId));
+        return lse;
+    }
+
     public static NodeEvent createNodeEvent(String userName, Integer accountId, Integer loadbalancerId, Integer nodeId, String title, String desc, EventType eventType, CategoryType category, EventSeverity severity) {
         NodeEvent ne = new NodeEvent();
         ne.setAccountId(accountId);
@@ -38,7 +53,23 @@ public class AtomHelper {
         ne.setSeverity(severity);
         ne.setType(eventType);
         ne.setRelativeUri(createRelativeUri(accountId, loadbalancerId, eventType, nodeId));
+        return ne;
+    }
 
+    public static NodeServiceEvent createNodeServiceEvent(String userName, Integer accountId, Integer loadbalancerId, Integer nodeId, String title, String desc, EventType eventType, CategoryType category, EventSeverity severity, String detailedMessage) {
+        NodeServiceEvent ne = new NodeServiceEvent();
+        ne.setAccountId(accountId);
+        ne.setLoadbalancerId(loadbalancerId);
+        ne.setAuthor(userName);
+        ne.setNodeId(nodeId);
+        ne.setCreated(Calendar.getInstance());
+        ne.setTitle(title);
+        ne.setDescription(desc);
+        ne.setCategory(category);
+        ne.setSeverity(severity);
+        ne.setType(eventType);
+        ne.setDetailedMessage(detailedMessage);
+        ne.setRelativeUri(createRelativeUri(accountId, loadbalancerId, eventType, nodeId) + "/events");
         return ne;
     }
 
@@ -142,7 +173,7 @@ public class AtomHelper {
     }
 
     public static String createRelativeUri(Integer accountId, Integer loadblancerId, EventType eventType, Integer additionalId) {
-        StringBuffer urI = new StringBuffer("/" + accountId + "/loadbalancers/" + loadblancerId);
+        StringBuilder urI = new StringBuilder("/" + accountId + "/loadbalancers/" + loadblancerId);
 
         if (eventType.equals(CREATE_ACCESS_LIST) || eventType.equals(UPDATE_ACCESS_LIST) || eventType.equals(DELETE_ACCESS_LIST) || eventType.equals(DELETE_NETWORK_ITEM)) {
             urI.append("/accesslist/");

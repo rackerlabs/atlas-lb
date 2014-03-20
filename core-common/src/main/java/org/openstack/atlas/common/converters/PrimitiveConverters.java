@@ -1,7 +1,6 @@
-package org.openstack.atlas.common.converters;
+package org.openstack.atlas.util.converters;
 
-import org.openstack.atlas.common.converters.exceptions.ConverterException;
-
+import org.openstack.atlas.util.common.exceptions.ConverterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class PrimitiveConverters {
     }
 
     public static String integerList2cdString(List<Integer> ints) throws ConverterException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String component;
         int intListSize;
         int i;

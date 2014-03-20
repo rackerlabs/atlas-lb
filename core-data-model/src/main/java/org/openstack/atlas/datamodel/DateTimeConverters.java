@@ -1,14 +1,13 @@
-package org.openstack.atlas.datamodel;
+package org.openstack.atlas.util.converters;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.ISODateTimeFormat;
-import org.openstack.atlas.common.converters.exceptions.ConverterException;
-
+import org.openstack.atlas.util.common.exceptions.ConverterException;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 
 
 public class DateTimeConverters {

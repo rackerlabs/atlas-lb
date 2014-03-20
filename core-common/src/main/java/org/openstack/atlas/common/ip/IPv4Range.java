@@ -3,7 +3,7 @@ package org.openstack.atlas.common.ip;
 import org.openstack.atlas.common.ip.exception.IPOctetOutOfRangeException;
 import org.openstack.atlas.common.ip.exception.IPStringConversionException;
 
-public class IPv4Range {
+ public class IPv4Range {
 
     private long lo;
     private long hi;

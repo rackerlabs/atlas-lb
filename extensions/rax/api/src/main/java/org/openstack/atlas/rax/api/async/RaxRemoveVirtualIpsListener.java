@@ -1,40 +1,28 @@
-package org.openstack.atlas.rax.api.async;
+package org.openstack.atlas.api.async;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openstack.atlas.api.async.BaseListener;
-import org.openstack.atlas.datamodel.CoreLoadBalancerStatus;
-import org.openstack.atlas.datamodel.CoreUsageEventType;
-import org.openstack.atlas.rax.api.integration.RaxProxyService;
-import org.openstack.atlas.rax.datamodel.RaxUsageEventType;
-import org.openstack.atlas.rax.domain.service.RaxVirtualIpService;
-import org.openstack.atlas.service.domain.entity.LoadBalancer;
-import org.openstack.atlas.service.domain.event.entity.EventType;
-import org.openstack.atlas.service.domain.exception.EntityNotFoundException;
-import org.openstack.atlas.service.domain.pojo.MessageDataContainer;
-import org.openstack.atlas.service.domain.repository.LoadBalancerRepository;
-import org.openstack.atlas.service.domain.service.NotificationService;
-import org.openstack.atlas.service.domain.service.VirtualIpService;
-import org.openstack.atlas.service.domain.service.helpers.AlertType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.openstack.atlas.service.domain.entities.LoadBalancer;
+import org.openstack.atlas.service.domain.entities.LoadBalancerStatus;
+import org.openstack.atlas.service.domain.events.UsageEvent;
+import org.openstack.atlas.service.domain.exceptions.EntityNotFoundException;
+import org.openstack.atlas.service.domain.exceptions.UsageEventCollectionException;
+import org.openstack.atlas.service.domain.pojos.MessageDataContainer;
+import org.openstack.atlas.service.domain.services.helpers.AlertType;
 
 import javax.jms.Message;
+import java.util.Calendar;
 import java.util.List;
 
-import static org.openstack.atlas.service.domain.event.entity.CategoryType.*;
-import static org.openstack.atlas.service.domain.event.entity.EventSeverity.*;
+import static org.openstack.atlas.service.domain.events.entities.CategoryType.DELETE;
+import static org.openstack.atlas.service.domain.events.entities.EventSeverity.CRITICAL;
+import static org.openstack.atlas.service.domain.events.entities.EventSeverity.INFO;
+import static org.openstack.atlas.service.domain.events.entities.EventType.DELETE_VIRTUAL_IP;
+import static org.openstack.atlas.service.domain.services.helpers.AlertType.DATABASE_FAILURE;
+import static org.openstack.atlas.service.domain.services.helpers.AlertType.ZEUS_FAILURE;
 
-@Component
-public class RaxRemoveVirtualIpsListener extends BaseListener {
-    private final Log LOG = LogFactory.getLog(RaxRemoveVirtualIpsListener.class);
-
-    @Autowired
-    private LoadBalancerRepository loadBalancerRepository;
-    @Autowired
-    private VirtualIpService virtualIpService;
-    @Autowired
-    private NotificationService notificationService;
+public class DeleteVirtualIpsListener extends BaseListener {
+    private final Log LOG = LogFactory.getLog(DeleteVirtualIpsListener.class);
 
     @Override
     public void doOnMessage(final Message message) throws Exception {
@@ -46,7 +34,7 @@ public class RaxRemoveVirtualIpsListener extends BaseListener {
         List<Integer> vipIdsToDelete = dataContainer.getIds();
 
         try {
-            dbLoadBalancer = loadBalancerRepository.getByIdAndAccountId(dataContainer.getLoadBalancerId(), dataContainer.getAccountId());
+            dbLoadBalancer = loadBalancerService.get(dataContainer.getLoadBalancerId(), dataContainer.getAccountId());
         } catch (EntityNotFoundException enfe) {
             String alertDescription = String.format("Load balancer '%d' not found in database.", dataContainer.getLoadBalancerId());
             LOG.error(alertDescription, enfe);
@@ -57,38 +45,49 @@ public class RaxRemoveVirtualIpsListener extends BaseListener {
 
         try {
             LOG.debug(String.format("Removing virtual ips from load balancer '%d' in Zeus...", dbLoadBalancer.getId()));
-            ((RaxProxyService)reverseProxyLoadBalancerService).deleteVirtualIps(dbLoadBalancer, vipIdsToDelete);
+            reverseProxyLoadBalancerService.deleteVirtualIps(dbLoadBalancer, vipIdsToDelete);
             LOG.debug(String.format("Successfully removed virtual ips from load balancer '%d' in Zeus.", dbLoadBalancer.getId()));
         } catch (Exception e) {
-            loadBalancerRepository.changeStatus(dbLoadBalancer, CoreLoadBalancerStatus.ERROR);
+            loadBalancerService.setStatus(dbLoadBalancer, LoadBalancerStatus.ERROR);
             String alertDescription = String.format("Error deleting virtual ips in Zeus for loadbalancer '%d'.", dbLoadBalancer.getId());
             LOG.error(alertDescription, e);
-            notificationService.saveAlert(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), e, AlertType.LBDEVICE_FAILURE.name(), alertDescription);
+            notificationService.saveAlert(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), e, ZEUS_FAILURE.name(), alertDescription);
             sendErrorToEventResource(dataContainer);
+
             return;
         }
 
         try {
             LOG.debug(String.format("Removing virtual ips from load balancer '%d' in database...", dbLoadBalancer.getId()));
-            ((RaxVirtualIpService) virtualIpService).removeVipsFromLoadBalancer(dbLoadBalancer, vipIdsToDelete);
+            virtualIpService.removeVipsFromLoadBalancer(dbLoadBalancer, vipIdsToDelete);
             LOG.debug(String.format("Successfully removed virtual ips from load balancer '%d' in database.", dbLoadBalancer.getId()));
         } catch (Exception e) {
-            loadBalancerRepository.changeStatus(dbLoadBalancer, CoreLoadBalancerStatus.ERROR);
+            loadBalancerService.setStatus(dbLoadBalancer, LoadBalancerStatus.ERROR);
             String alertDescription = String.format("Error deleting virtual ips in database for loadbalancer '%d'.", dbLoadBalancer.getId());
             LOG.error(alertDescription, e);
-            notificationService.saveAlert(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), e, AlertType.DATABASE_FAILURE.name(), alertDescription);
+            notificationService.saveAlert(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), e, DATABASE_FAILURE.name(), alertDescription);
             sendErrorToEventResource(dataContainer);
+
+            //Set status record
+            loadBalancerStatusHistoryService.save(dbLoadBalancer.getAccountId(), dbLoadBalancer.getId(), LoadBalancerStatus.ERROR);
             return;
         }
 
+        Calendar eventTime = Calendar.getInstance();
+
+        // Notify usage processor
+        try {
+            usageEventCollection.collectUsageAndProcessUsageRecords(dbLoadBalancer, UsageEvent.DELETE_VIRTUAL_IP, eventTime);
+        } catch (UsageEventCollectionException uex) {
+            LOG.error(String.format("Collection and processing of the usage event failed for load balancer: %s " +
+                    ":: Exception: %s", dbLoadBalancer.getId(), uex));
+        }
+
         // Update load balancer status in DB
-        loadBalancerRepository.changeStatus(dbLoadBalancer, CoreLoadBalancerStatus.ACTIVE);
+        loadBalancerService.setStatus(dbLoadBalancer, LoadBalancerStatus.ACTIVE);
 
         // Add atom entry
         sendSuccessToEventResource(dataContainer);
-
-        // Notify usage processor with a usage event
-        notifyUsageProcessor(message, dbLoadBalancer, RaxUsageEventType.REMOVE_VIRTUAL_IP);
 
         LOG.info(String.format("Delete virtual ip operation complete for load balancer '%d'.", dbLoadBalancer.getId()));
     }
@@ -97,7 +96,7 @@ public class RaxRemoveVirtualIpsListener extends BaseListener {
         String title = "Error Deleting Virtual Ip";
         String desc = "Could not delete the virtual ip at this time.";
         for (Integer vipIdToDelete : dataContainer.getIds()) {
-            notificationService.saveVirtualIpEvent(dataContainer.getUserName(), dataContainer.getAccountId(), dataContainer.getLoadBalancerId(), vipIdToDelete, title, desc, EventType.DELETE_VIRTUAL_IP, DELETE, CRITICAL);
+            notificationService.saveVirtualIpEvent(dataContainer.getUserName(), dataContainer.getAccountId(), dataContainer.getLoadBalancerId(), vipIdToDelete, title, desc, DELETE_VIRTUAL_IP, DELETE, CRITICAL);
         }
     }
 
@@ -105,7 +104,7 @@ public class RaxRemoveVirtualIpsListener extends BaseListener {
         String atomTitle = "Virtual Ip Successfully Deleted";
         String atomSummary = "Virtual ip successfully deleted";
         for (Integer vipIdToDelete : dataContainer.getIds()) {
-            notificationService.saveVirtualIpEvent(dataContainer.getUserName(), dataContainer.getAccountId(), dataContainer.getLoadBalancerId(), vipIdToDelete, atomTitle, atomSummary, EventType.DELETE_VIRTUAL_IP, DELETE, INFO);
+            notificationService.saveVirtualIpEvent(dataContainer.getUserName(), dataContainer.getAccountId(), dataContainer.getLoadBalancerId(), vipIdToDelete, atomTitle, atomSummary, DELETE_VIRTUAL_IP, DELETE, INFO);
         }
     }
 }
