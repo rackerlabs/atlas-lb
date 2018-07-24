@@ -75,7 +75,7 @@
     </build>
 
     <properties>
-        <hibernate.version>3.5.1-Final</hibernate.version>
+        <hibernate.version>4.1.1.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <camel.version>2.5.0</camel.version>
         <spring.version>3.0.4.RELEASE</spring.version>
@@ -311,7 +311,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.6</version>
+                <version>5.1.42</version>
             </dependency>
 
             <dependency>
@@ -405,7 +405,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.6</version>
+                <version>5.1.42</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -589,7 +589,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.6</version>
+                <version>5.1.42</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
