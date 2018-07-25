@@ -9,7 +9,7 @@
     <name>HibernateExp</name>
     <url>http://maven.apache.org</url>
     <properties>
-        <spring.version>2.5.6.SEC01</spring.version>
+        <spring.version>2.5.6.SEC03</spring.version>
     </properties>
 
     <dependencies>
