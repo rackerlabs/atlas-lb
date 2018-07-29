@@ -77,9 +77,9 @@
     <properties>
         <hibernate.version>3.5.1-Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <camel.version>2.5.0</camel.version>
-        <spring.version>3.0.4.RELEASE</spring.version>
-        <cxf.version>2.5.1</cxf.version>
+        <camel.version>2.12.5</camel.version>
+        <spring.version>3.2.9.RELEASE</spring.version>
+        <cxf.version>3.1.14</cxf.version>
         <com.zxtm.service.version>1.1.0</com.zxtm.service.version>
         <com.rackspace.cloud.lb.zxtmadapter.version>${project.version}</com.rackspace.cloud.lb.zxtmadapter.version>
         <mockito.version>1.9.0-rc1</mockito.version>
@@ -199,7 +199,7 @@
             <dependency>
                 <groupId>org.apache.abdera</groupId>
                 <artifactId>abdera-server</artifactId>
-                <version>1.0</version>
+                <version>1.1.3</version>
             </dependency>
 
             <dependency>
